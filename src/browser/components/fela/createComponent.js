@@ -3,16 +3,28 @@ import PropTypes from 'prop-types';
 import transformStyle from './transformStyle';
 import setLongPressEvent from './setLongPressEvent';
 
+var clone = obj => {
+  var copy = {};
+  for (var i in obj) copy[i] = obj[i];
+  return copy;
+};
+
 function createComponent(type = 'div', passThroughProps = []) {
   var FelaComponent = function FelaComponent(
     { children, className, id, style = {}, ...ruleProps },
     { renderer, theme = {} }
   ) {
+    var cloned = false;
+    var setHover = prop => {
+      if (!cloned) {
+        style = clone(style);
+        cloned = true;
+      }
+      style[':hover'] = Object.assign({ cursor: 'pointer' }, style[':hover'], prop);
+    };
     if (style instanceof Array) style = Object.assign({}, ...style);
 
-    let setHover = prop => Object.assign({ cursor: 'pointer' }, style[':hover'], prop);
-
-    var componentProps = passThroughProps.reduce(function(output, prop) {
+    var componentProps = passThroughProps.reduce((output, prop) => {
       if (typeof prop === 'object') {
         Object.assign(output, prop);
       } else if (ruleProps.hasOwnProperty(prop)) {
@@ -44,10 +56,10 @@ function createComponent(type = 'div', passThroughProps = []) {
             output.src = ruleProps.source;
             break;
           case 'underlayColor':
-            style[':hover'] = setHover({ backgroundColor: ruleProps.underlayColor });
+            setHover({ backgroundColor: ruleProps.underlayColor });
             break;
           case 'activeOpacity':
-            style[':hover'] = setHover({ opacity: ruleProps.activeOpacity });
+            setHover({ opacity: ruleProps.activeOpacity });
             break;
           default:
             output[prop] = ruleProps[prop];

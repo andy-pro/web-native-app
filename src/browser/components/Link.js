@@ -5,8 +5,18 @@ import { NavLink } from 'react-router-dom';
 import { View, Text, TouchableOpacity, TouchableHighlight, AnchorLink } from './fela';
 import { mainCSS } from '../styles';
 
-const TouchLink = ({ to, ...props }, { router }) =>
-  <TouchableOpacity to={() => router.history.push(to)} {...props} />;
+const TouchLink = ({ to, onNavigate, ...props }, { router }) =>
+  <TouchableOpacity
+    onPress={event => {
+      if (to) {
+        router.history.push(to);
+        if (onNavigate) {
+          onNavigate({ event, path: to });
+        }
+      }
+    }}
+    {...props}
+  />;
 
 TouchLink.contextTypes = {
   router: PropTypes.object,
@@ -40,9 +50,10 @@ export const Link = props =>
         </View>;
 */
 
-export const Link = ({ to, exact, style, message, children, ...props }) =>
-  typeof to === 'function'
-    ? <Text onClick={to} style={mainCSS.t_link} />
+export const Link = ({ to, exact, inline, style, message, children, ...props }) => {
+  if (inline) style = Object.assign({}, style, mainCSS.inline);
+  return typeof to === 'function'
+    ? <Text onClick={to} style={[mainCSS.t_link, style]} />
     : to.includes('://')
       ? <AnchorLink href={to} target="_blank" style={[mainCSS.h_link, style]} {...props}>
           {message}
@@ -53,5 +64,6 @@ export const Link = ({ to, exact, style, message, children, ...props }) =>
             {children}
           </NavLink>
         </TouchableHighlight>;
+};
 
 // style={Object.assign({}, mainCSS.a_link, style.link)}

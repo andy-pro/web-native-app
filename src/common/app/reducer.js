@@ -113,9 +113,9 @@ const reducer = (state = initialState, action) => {
       return state;
 
     // process all the keys listed in 'config/storage.path
-    case REHYDRATE:
-      let app = payload.app || __initialState.app;
-      return Object.assign({}, state, app, { dataReady: true });
+    // case REHYDRATE:
+    //   let app = payload.app || __initialState.app;
+    //   return Object.assign({}, state, app, { dataReady: true });
 
     case 'SET_LOCALE':
       return setLocale(state, payload);

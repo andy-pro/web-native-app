@@ -36,43 +36,26 @@ const ToolBar = props => {
       setCommand,
       setSortMode,
       appShowMenu,
+      sideMenuMode,
     } = props,
     path = urlParts[0],
-    // subTitle = urlParts[2],
     // _home = path === '/',
     _cats = path === '/categories',
     _locs = path === '/locations',
     _map = path === '/map',
     entryName = entry ? entry.name : '',
     notList = entry && !entryName,
-    subTitle,
-    subTitleCSS,
-    { isBrowser } = os,
-    homeIcon = isBrowser ? 'home' : 'menu';
+    { isBrowser, isNative } = os,
+    homeIcon = isBrowser ? 'home' : 'menu',
+    subTitleCSS = { color: sideMenuMode ? colors.dark : colors.light };
 
-  // prettier-ignore
-  if (entry && entry.region && entry.region.manual) {
-    let {region} = entry
-    subTitle = `${region.latitude.toPrecision(7)}, ${region.longitude.toPrecision(7)}`;
-  } else {
-    subTitle = entryName || findNameByUrl(urlParts, { categories, locations });
-  }
-
-  if (os.isNative) {
+  if (isNative) {
     let { width } = layout,
       max = opts.maxWidth;
-    subTitleCSS = {
-      // 5 icons + gaps ~ 250px
-      width: width && width > max ? max - 250 : 150,
-    };
+    // 5 icons + gaps ~ 250px
+    subTitleCSS.width = width && width > max ? max - 250 : 150;
     // console.log('layout', width, height);
   }
-
-  // sortMode = sortMode || { index: 1, name: 'sort-asc' };
-  // console.log('ToolBar', sortMode, 'sort' + sortMode.index);
-
-  // let { isBrowser } = os,
-  // homeIcon = isBrowser ? 'home' : 'menu';
 
   const actions = {
     toggleMenu: () => appShowMenu(),
@@ -98,13 +81,11 @@ const ToolBar = props => {
     let icon = icons[key],
       dis = icon.dis && notList,
       { color } = icon;
-
     color = color
       ? typeof color === 'function' ? color(icon, props) : color
       : dis ? iconColors.disabled : iconColors.main;
-
     let set = {
-      // backgroundColor: iconColors.bgMain,
+      size: 21,
       color,
       name: icon.name,
       title: icon.title,
@@ -116,18 +97,19 @@ const ToolBar = props => {
   };
 
   let _list = _cats || _locs,
-    _edit = _list && entry;
+    _edit = _list && entry,
+    _menu = !sideMenuMode;
   return (
     <View style={mainCSS.between}>
       <View style={mainCSS.centerRow}>
-        <IconButton {...iconSet(homeIcon)} />
-        <Text style={[mainCSS.subTitle, { color: colors.light }, subTitleCSS]}>
-          {subTitle}
+        {_menu && <IconButton {...iconSet(homeIcon)} />}
+        <Text style={[mainCSS.subTitle, subTitleCSS]}>
+          {entryName}
         </Text>
       </View>
 
       <View style={mainCSS.centerRow}>
-        {isBrowser && <IconButton {...iconSet('menu')} />}
+        {_menu && isBrowser && <IconButton {...iconSet('menu')} />}
         {_edit && <IconButton {...iconSet('add')} />}
         {_edit && <IconButton {...iconSet('remove')} />}
         {_edit && <IconButton {...iconSet('edit')} />}

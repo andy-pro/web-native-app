@@ -28,7 +28,7 @@ const Header = props => {
         <Text style={styles.title}>
           {title}
         </Text>
-        {!sideMenuMode && <ToolBar {...props} />}
+        <ToolBar {...props} />
       </View>
     </View>
   );

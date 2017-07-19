@@ -3,7 +3,7 @@ import { opts, colors } from '../../common/const';
 
 export const sectionsCSS = StyleSheet.create({
   header: {
-    backgroundColor: colors.success,
+    backgroundColor: colors.submain,
     borderBottomColor: colors.silver,
     borderBottomWidth: 1,
     paddingVertical: 10,

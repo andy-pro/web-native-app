@@ -11,10 +11,12 @@ import os from '../../common/os';
 
 // Pages
 import HomePage from '../home/HomePage';
+import DemoPage from '../demo/DemoPage';
 import ListViewPage from '../lists/ListViewPage';
 import FlatListPage from '../lists/FlatListPage';
 import SectionListPage from '../lists/SectionListPage';
 import LongPressPage from '../editedlist/LongPressPage';
+import WrappedFormPage from '../editedlist/WrappedFormPage';
 
 class App extends React.Component {
   componentDidMount() {
@@ -58,10 +60,12 @@ class App extends React.Component {
     return (
       <View style={mainCSS.fullMain}>
         <Page path="/" exact component={HomePage} {...props} />
+        <Page path="/demo" component={DemoPage} {...props} />
         <Page path="/listview" component={ListViewPage} {...props} />
         <Page path="/flatlist" component={FlatListPage} {...props} />
         <Page path="/sectionlist" component={SectionListPage} {...props} />
-        <Page path="/longpress" component={LongPressPage} {...props} />
+        <Page path="/longpress/:location?" component={LongPressPage} {...props} />
+        <Page path="/formwrapper" component={WrappedFormPage} {...props} />
       </View>
     );
   }

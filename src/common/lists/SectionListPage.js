@@ -8,15 +8,15 @@ import {
   renderSectionSeparator,
 } from './elements';
 import { mainCSS } from '../styles';
-import presidents from '../__data/presidents';
 import toSections from './toSections';
+import initialState from '../initialState';
 
 export default class extends React.Component {
   render() {
     return (
       <SectionList
         contentContainerStyle={mainCSS.list}
-        sections={toSections(presidents)}
+        sections={toSections(initialState.presidents)}
         renderSectionHeader={renderSectionHeader}
         renderItem={renderItem}
         SectionSeparatorComponent={renderSectionSeparator}

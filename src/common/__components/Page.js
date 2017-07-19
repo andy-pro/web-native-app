@@ -42,7 +42,7 @@ export default ({ component: Component, path = '', exact, dataReady, layout }) =
             isRoot = root === '/',
             height = layout.height || minH,
             land = layout.isLandscape && height < minH,
-            sideMenuMode = os.isBrowser && layout.width > opts.maxWidth + opts.menuWidth,
+            sideMenuMode = layout.width > opts.maxWidth + opts.menuWidth,
             limitedCSS = sideMenuMode ? mainCSS.sideMenuLimited : mainCSS.limited;
           Object.assign(routerProps, {
             dataReady,

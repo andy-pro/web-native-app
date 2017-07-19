@@ -3,7 +3,7 @@ import React from 'react';
 import { ListView } from '../components';
 import { renderItem, renderSeparator } from './elements';
 import { mainCSS } from '../styles';
-import presidents from '../__data/presidents';
+import initialState from '../initialState';
 
 export default class extends React.Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class extends React.Component {
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
     this.state = {
-      dataSource: ds.cloneWithRows(presidents),
+      dataSource: ds.cloneWithRows(initialState.presidents),
     };
   }
 

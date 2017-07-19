@@ -75,6 +75,11 @@ export const mainCSS = {
     fontSize: opts.fontSize,
     color: colors.dark,
   },
+  title: {
+    fontSize: 24,
+    color: '#777',
+    paddingVertical: 20,
+  },
   subTitle: {
     fontSize: opts.fontSize,
     fontWeight: '600',
@@ -132,7 +137,7 @@ export const mainCSS = {
   input: {
     ':focus': {
       borderColor: colors.mainTouch,
-      boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,136,138,.6)',
+      boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,164,211,.6)',
     },
     width: 0,
     outline: 0,
@@ -157,8 +162,16 @@ export const mainCSS = {
     // paddingVertical: 1,
     marginHorizontal: 5,
   },
+  prompt: {
+    fontSize: 12,
+    marginHorizontal: 5,
+  },
 
   /* links */
+  inline: {
+    display: 'inline-block',
+    padding: '0 0.3em',
+  },
   v_link: {
     ':hover': {
       textDecoration: 'underline',
@@ -166,12 +179,8 @@ export const mainCSS = {
       // backgroundColor: 'red',
     },
     // cursor: 'pointer',
-    fontSize: opts.fontSize * 0.9,
+    // fontSize: opts.fontSize * 0.9,
     // fontFamily: opts.fontFamily,
-  },
-  h_link: {
-    display: 'inline-block',
-    padding: '0 0.3em',
   },
   a_link: {
     // ':hover': {
@@ -203,12 +212,14 @@ export const mainCSS = {
 };
 
 export const checkboxCSS = {
-  input: {},
+  input: {
+    marginHorizontal: 5,
+  },
   image: {
     top: 4,
     position: 'relative',
     width: 18,
-    marginRight: 10,
+    marginRight: 6,
   },
   label: {
     color: colors.dark,

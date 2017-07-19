@@ -15,10 +15,11 @@ const configureStore = options => {
 
   const store = createStore(
     reducer,
+    undefined,
     // initialState,
     /* comment, if REHYDRATE from 'redux-peersist' used;
        in this case initialState merged with state in reducers (REHYDRATE actions) */
-    compose(applyMiddleware(...middleware), autoRehydrate())
+    compose(applyMiddleware(...middleware), autoRehydrate({ log: true }))
   );
 
   if (platformDeps.storageEngine) {

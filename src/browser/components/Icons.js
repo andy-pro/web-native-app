@@ -9,12 +9,17 @@ import os from '../../common/os';
 
 export { Icon };
 
-const IconButtonBase = ({ message, children, size, color = iconColors.main, name }) => {
-  size = size || os.isTouchDevice ? 16 : 15;
+const IconButtonBase = ({
+  message,
+  children,
+  size = os.isTouchDevice ? 16 : 15,
+  color = iconColors.main,
+  name,
+}) => {
   message = message || children;
   return (
     <View style={mainCSS.centerRow}>
-      <Icon size={size * 1.7} color={color} name={name} />
+      <Icon size={size * 1.4} color={color} name={name} />
       {message &&
         <Text
           style={{

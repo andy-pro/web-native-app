@@ -3,19 +3,24 @@
 import Helmet from 'react-helmet';
 import DropdownMenu from './DropdownMenu';
 // import DatePicker from './DatePicker'
-// import Checkbox from '../Checkbox';
 import ListView from './ListView';
 import FlatList from './FlatList';
 import SectionList from './SectionList';
 import FormWrapper from '../../common/__components/FormWrapper';
 import Dialogs from '../../common/__components/Dialogs';
+import Checkbox from '../../common/__components/Checkbox';
 import { View } from './fela';
 
 const Alert = {
   alert: (hdr, msg, btns) => {
     if (msg) hdr = hdr + '\n' + msg;
     if (!btns) alert(hdr);
-    else if (confirm(hdr)) btns[1].onPress();
+    else {
+      let onCancel = btns[0].onPress,
+        onOk = btns[1].onPress;
+      if (confirm(hdr)) onOk();
+      else if (onCancel) onCancel();
+    }
   },
 };
 
@@ -27,7 +32,7 @@ export {
   Helmet,
   DropdownMenu,
   // DatePicker,
-  // Checkbox,
+  Checkbox,
   ListView,
   FlatList,
   SectionList,

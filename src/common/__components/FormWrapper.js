@@ -5,16 +5,34 @@ import { convToArray } from '../__lib/utils';
 import os from '../os';
 
 /*
-  model:
+  Model: {
+    submit: String, // submit handler name, 'onSubmit' by default,
+    fields: Array, // array of field objects
+  }
+  If there are more than one form on the page, then an array of models used:
+  [
+    { submit: onInsertSubmit, fields: [{...}, {...}] },
+    { submit: onRemoveSubmit, fields: [{...}, {...}] },
+    { submit: onUpdateSubmit, fields: [{...}, {...}] },
+    ...
+  ]
+
+  !!! Field names on a page must be unique !!!
+
+  If the form has only one field, you can do so:
+  { submit: 'onFormSubmit', fields: {...} }
+
+  field:
     { fn: fieldName, type: [text(default), checkbox, picker, file],
       vd: validator, init: initialValue, af: autoFocus, pp: postProcessing }
-  methods:
+
+  Methods:
     __resetState(index),
        index - index of form on page to reset, if 'all' - all forms will be resetted, default - 0
-    __setState
+    __setState(object of fields)
 */
 
-const wrapper = forms => WrappedComponent => {
+const wrapper = forms => WrappedForm => {
   return class FormWrapper extends React.Component {
     static TYPES = {
       text: {
@@ -38,11 +56,11 @@ const wrapper = forms => WrappedComponent => {
     constructor(props) {
       super(props);
       let { isNative } = os,
-        refName = isNative ? 'ref' : '$ref';
+        refName = isNative ? 'ref' : '$ref',
+        submits = {};
       let fields = {
         __query: '',
         __refs: {},
-        __submits: {},
         __types: {},
         __state: {},
         __setState: nextFields => this.setFields('set', nextFields),
@@ -50,19 +68,20 @@ const wrapper = forms => WrappedComponent => {
       };
       forms = convToArray(forms);
       forms.forEach(form => {
-        fields.__submits[form.submit] = this.onSubmit(form);
         form.fields = convToArray(form.fields);
         form.fields.forEach(field => {
-          let { fn, type = 'text', init = '', af } = field,
+          let { fn, type = 'text', init, af } = field,
             { handler, value } = FormWrapper.TYPES[type],
             fileNative = isNative && type === 'file';
+          if (init === undefined) {
+            init = type === 'checkbox' ? false : '';
+          }
           fields.__types[fn] = type;
           fields.__state[fn] = init;
           fields[fn] = {
             [handler]: e => this.setFields('change', { e, fn }),
             [value]: init,
             [fileNative ? '$ref' : refName]: c => (fields.__refs[fn] = c),
-            // [refName]: c => { if (c) fields.__refs[fn] = c }
           };
           if (fileNative) {
             fields[fn].getElement = () => fields.__refs[fn];
@@ -73,8 +92,12 @@ const wrapper = forms => WrappedComponent => {
             fields[fn].autoFocus = true;
           }
         });
+        let h = form.submit || 'onSubmit';
+        submits[h] = e =>
+          this.refs.wrappedForm[h](this.onSubmit(form)(e), this.state.fields);
       });
       this.state = { fields };
+      this.submits = submits;
     }
 
     setFields = (cmd, opts) => {
@@ -94,7 +117,7 @@ const wrapper = forms => WrappedComponent => {
           q = !field[value];
         } else {
           el = e.target;
-          if (type === 'file' && !isNative) {
+          if (!isNative && type === 'file') {
             let { files } = el;
             q = files && files[0] ? files[0] : '';
           } else {
@@ -117,12 +140,13 @@ const wrapper = forms => WrappedComponent => {
         if (cmd === 'set') {
           Object.keys(opts).forEach(fn => {
             let v = opts[fn],
-              t = __types[fn];
+              type = __types[fn];
             if (fields.hasOwnProperty(fn)) {
-              if (t === 'text') v = '' + v;
-              fields[fn][TYPES[t].value] = v;
+              if (type === 'text') v = '' + v;
+              fields[fn][TYPES[type].value] = v;
               fields.__state[fn] = v;
-              if (!isNative && t === 'file') {
+              if (!isNative && type === 'file') {
+                // browser file input only
                 fields.__refs[fn].value = v;
               }
             }
@@ -131,7 +155,10 @@ const wrapper = forms => WrappedComponent => {
           // get resetted forms
           let rfs = opts === 'all' ? forms : [forms[opts]];
           rfs.forEach(rf => {
-            rf.fields.forEach(({ fn, type = 'text', init = '', af }) => {
+            rf.fields.forEach(({ fn, type = 'text', init, af }) => {
+              if (init === undefined) {
+                init = type === 'checkbox' ? false : '';
+              }
               fields[fn][TYPES[type].value] = init;
               fields.__state[fn] = init;
               if (af) fields.__refs[fn].focus();
@@ -150,9 +177,12 @@ const wrapper = forms => WrappedComponent => {
         { fields } = this.state,
         __fields = {},
         TYPES = this.constructor.TYPES;
+      // console.log('keys', keys, fields);
       for (var i = 0, len = keys.length; i < len; i++) {
         let { fn, type = 'text', vd, pp } = keys[i],
-          el = fields.__refs[fn];
+          cb = type === 'checkbox',
+          // checkboxes does not have a focus (TODO)
+          el = cb ? true : fields.__refs[fn];
         if (!el) continue;
         let field = fields[fn],
           { value } = TYPES[type];
@@ -160,18 +190,20 @@ const wrapper = forms => WrappedComponent => {
         if (type === 'text') {
           value = value.trim();
           if (pp) value = pp(value); // postProcessing
-        } else if (type === 'file' && os.isNative) {
+        } else if (os.isNative && type === 'file') {
           let n = value.trim();
           value = field.fileList.find(item => item.name === n);
-          // value = fields[fn].fileList.find(item => item.name === n)
         }
-        let valid = vd ? validator[vd](value) : true;
-        // console.log('form vars', fn, el, valid);
-        if (!valid) {
-          // this.state.fields.__refs[fn].focus()
-          // fields.__refs[fn].focus()
-          el.focus();
-          return false;
+        if (!cb) {
+          // checkboxes does not require validators
+          let valid = vd ? validator[vd](value) : true;
+          // console.log('form vars', fn, el, valid);
+          if (!valid) {
+            // this.state.fields.__refs[fn].focus()
+            // fields.__refs[fn].focus()
+            el.focus();
+            return false;
+          }
         }
         __fields[fn] = value;
       }
@@ -179,7 +211,14 @@ const wrapper = forms => WrappedComponent => {
     };
 
     render() {
-      return <WrappedComponent {...this.props} fields={this.state.fields} />;
+      return (
+        <WrappedForm
+          fields={this.state.fields}
+          ref="wrappedForm"
+          {...this.props}
+          {...this.submits}
+        />
+      );
     }
   };
 };

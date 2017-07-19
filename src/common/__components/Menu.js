@@ -23,14 +23,14 @@ export default ({ appShowMenu, style }) => {
   return (
     <ScrollView automaticallyAdjustContentInsets={false} style={[menuCSS.root, style]}>
       <MenuLink exact to="/" />
-      <MenuLink to="/buttons" />
+      <MenuLink to="/demo" />
       <MenuLink to="/listview" />
       <MenuLink to="/flatlist" />
       <MenuLink to="/sectionlist" />
       <MenuLink to="/longpress" />
-      <MenuLink to="/formhelper" />
-      <MenuLink to="/picker" />
-      <MenuLink to="/fileinput" />
+      <MenuLink to="/formwrapper" />
+      <MenuLink to="/editedlist" />
+      <MenuLink to="/backup" />
       <MenuLink to="/autosuggest" />
       <MenuLink to="/localdb" />
       <MenuLink to="/remotedb" />

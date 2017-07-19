@@ -1,14 +1,30 @@
 import React, { Component } from 'react';
 
 import create from './createComponent';
+import os from '../../../common/os';
 
-export const Text = create('span', ['data-path', 'onPress', 'onLongPress']);
+export const Text = create('span', [
+  'data-path',
+  'onPress',
+  'onLongPress', // onLongPress must be after onPress (onPress re-writing)
+]);
 
 export const View = create('div', ['data-path', 'onKeyDown', 'onPress', '$ref']);
 
 export const AnchorLink = create('a', ['download', 'href', 'target']);
 
-export const Button = create('button', ['onClick', 'title']);
+const ButtonBase = create('button', ['onPress']);
+export const Button = ({ title, color, style = {}, ...props }) => {
+  let key = os.isIos ? 'color' : 'backgroundColor';
+  style[key] = color;
+  return (
+    <ButtonBase style={style} {...props}>
+      {title}
+    </ButtonBase>
+  );
+};
+
+create('button', ['onPress', 'title']);
 
 export const TextInput = create('input', [
   'required',
@@ -26,26 +42,26 @@ export const TextInput = create('input', [
 
 export const FileInput = create('input', ['onChangeText', '$ref', { type: 'file' }]);
 
-// export const Form = create('form', ['onSubmit', 'onKeyDown']);
-const BaseForm = create('form', ['onSubmit', 'onKeyDown']);
+// hidden button for submit
+const FormBase = create('form', ['onSubmit', 'onKeyDown']);
 export const Form = ({ children, ...props }) =>
-  <BaseForm {...props}>
+  <FormBase {...props}>
     {children}
     <Button style={{ display: 'none' }} />
-  </BaseForm>;
+  </FormBase>;
 
 export const TouchableHighlight = create('div', [
   'activeOpacity',
   'underlayColor',
   'onPress',
-  'onLongPress',
+  'onLongPress', // onLongPress must be after onPress (onPress re-writing)
   'title',
   '$ref',
 ]);
 
 export const TouchableOpacity = TouchableHighlight;
 
-export const ScrollView = create('div', ['onPress']);
+export const ScrollView = create('div', ['onPress', { style: { overflow: 'auto' } }]);
 
 export const Image = create('img', ['source']);
 

@@ -8,7 +8,7 @@ export function renderItem({ item }) {
   let { entry } = this.props;
   return (
     <TouchLink
-      to={`/map/${item.id}`}
+      to={`/longpress/${item.id}`}
       underlayColor={colors.touch}
       style={[styles.item, entry && entry.id === item.id && mainCSS.active]}
       onLongPress={() => this.onItemLongPress(item)}
