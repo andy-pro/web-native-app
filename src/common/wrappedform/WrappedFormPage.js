@@ -12,7 +12,7 @@ import InfoWrapper from './InfoWrapper';
 class FormWithInfo extends React.Component {
   onSubmit = (data, fields) => {
     if (!data) return;
-    Alert.alert('FormData', JSON.stringify(data, null, 2));
+    Alert.alert('FormData', JSON.stringify(data, null, 4));
     fields.__resetState();
   };
 

@@ -40,11 +40,10 @@ export default Form =>
         }
         return true;
       }
-      onSubmit = e => {
-        let { props } = this,
-          data = this.props.fields.__submits.onSubmit(e);
+      onSubmit = (data, fields) => {
         if (!data) return;
-        let { mode, listName, entry } = props,
+        let { props } = this,
+          { mode, listName, entry } = props,
           list = props[listName],
           { name } = data,
           addMode = mode === 'pre_insert',
@@ -62,7 +61,7 @@ export default Form =>
           path: listName,
           entry: data,
         });
-        return addMode ? props.fields.__resetState() : props.resetForm();
+        return addMode ? fields.__resetState() : props.resetForm();
       };
 
       render() {

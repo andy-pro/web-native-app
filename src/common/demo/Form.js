@@ -9,7 +9,6 @@ import {
   Checkbox,
   Picker,
   IconButton,
-  Alert,
 } from '../components';
 import { colors, mainCSS } from '../styles';
 import initialState from '../initialState';

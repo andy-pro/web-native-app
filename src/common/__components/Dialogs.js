@@ -10,6 +10,7 @@ export default {
       [{ text: 'Cancel', style: 'cancel' }, { text: 'OK', onPress: cb }],
       { cancelable: false }
     );
+    return 'Confirm: delete entry';
   },
 
   deleteDamaged: info => {

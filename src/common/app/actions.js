@@ -1,4 +1,10 @@
 import { Observable } from 'rxjs';
+import { Dialogs } from '../components';
+
+export const appVoid = payload => ({
+  type: 'APP_VOID',
+  payload,
+});
 
 export const appError = error => ({
   type: 'APP_ERROR',
@@ -58,14 +64,21 @@ export const setCommand = payload => {
       payload,
     };
   }
-  if (name === 'remove') entry = entry.id;
-  return {
+  let action = {
     type: 'epic/UPDATE',
     list: path.replace(/^\//, ''),
     payload: entry,
     cmd: name, // insert, update, remove, purge, replace
     opts,
   };
+  if (name === 'remove') {
+    action.payload = entry.id;
+    /* execute an action for a callback
+       return function instead object
+      see simplest injectMiddleware in '__config/middleware.js' */
+    return ({ dispatch }) =>
+      appVoid(Dialogs.deleteConfirm(entry.name, () => dispatch(action)));
+  } else return action;
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

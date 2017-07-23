@@ -1,33 +1,52 @@
 import React from 'react';
-import {
-  Form as BaseForm,
-  View,
-  TextInput,
-  Checkbox,
-  Picker,
-  IconButton,
-} from '../components';
+import { Form as BaseForm, View, TextInput, Picker, IconButton } from '../components';
 import { removeSpecial } from '../__lib/utils';
+import validator from '../__lib/validator';
 import { mainCSS } from '../styles';
-import initialState from '../initialState';
 
-const textInputProps = {
-  keyboardType: 'default',
-  returnKeyType: 'done',
-  autoCapitalize: 'sentences',
+const coordsToUrl = ({ coords, zoom }) => {
+  coords = coords.value;
+  zoom = zoom.value;
+  let url = '/map';
+  if (validator.isCoords(coords)) {
+    url += `/@${coords.replace(/\s/g, '')}`;
+    if (validator.isDecimal(zoom)) {
+      url += `,${zoom}z`;
+    }
+  }
+  return url;
+};
+
+const cmdCoordsToMap = ({ fields, mode, setCommand, command, history }) => {
+  setCommand(Object.assign(command, { path: '/map', external: true }));
+  setTimeout(() => history.push(coordsToUrl(fields)), 0);
+};
+
+const onFormMount = ({ command, mode, entry, fields }) => {
+  if (command) {
+    let { path, isForm, external } = command;
+    if (external && isForm && path === '/map') {
+      let { region } = entry;
+      fields.__setState({
+        coords: `${region.latitude.toPrecision(7)}, ${region.longitude.toPrecision(7)}`,
+        zoom: region.zoom,
+      });
+    }
+  }
 };
 
 const Form = props => {
-  let { fields, mode, onSubmit } = props,
-    addMode = mode !== 'pre_update';
+  let { fields, mode, onSubmit, propsTextInput, categories } = props,
+    addMode = mode === 'pre_insert';
+  // console.log('locations form', fields, mode, categories);
   return (
-    <BaseForm style={[mainCSS.form, mainCSS.vgap20]} onSubmit={onSubmit}>
+    <BaseForm style={[mainCSS.form, mainCSS.divider]} onSubmit={onSubmit}>
       <View style={mainCSS.formRow}>
         <TextInput
           placeholder={addMode ? 'New entry' : 'Edit entry'}
           style={mainCSS.input}
           {...fields.name}
-          {...textInputProps}
+          {...propsTextInput}
         />
       </View>
       <View style={mainCSS.formRow}>
@@ -35,35 +54,34 @@ const Form = props => {
           placeholder={'Address'}
           style={mainCSS.input}
           {...fields.address}
-          {...textInputProps}
+          {...propsTextInput}
         />
-      </View>
-
-      <View style={mainCSS.formRow}>
-        <Checkbox label="Visited" {...fields.visited} />
-        <Checkbox label="Favorite" {...fields.favorite} />
-        <Checkbox label="Disabled" disabled />
       </View>
       <View style={mainCSS.formRow}>
         <TextInput
           placeholder={'Coordinates'}
           style={mainCSS.input}
           {...fields.coords}
-          {...textInputProps}
+          {...propsTextInput}
         />
-        <IconButton name="md-my-location" style={mainCSS.formBtn} title="Show on map" />
+        <IconButton
+          name="md-my-location"
+          style={mainCSS.formBtn}
+          onPress={() => cmdCoordsToMap(props)}
+          title="Show on map"
+        />
       </View>
       <View style={mainCSS.formRow}>
         <Picker {...fields.category} style={[mainCSS.picker, { flex: 3 }]}>
-          {initialState.continents.map((item, i) =>
-            <Picker.Item label={item} value={i} key={i} />
+          {categories.map(item =>
+            <Picker.Item label={item.name} value={item.id} key={item.id} />
           )}
         </Picker>
         <TextInput
           placeholder={'Zoom'}
           style={mainCSS.input}
           {...fields.zoom}
-          {...textInputProps}
+          {...propsTextInput}
           title="Save changes"
         />
         <IconButton
@@ -77,47 +95,17 @@ const Form = props => {
   );
 };
 
-/*
-  Model: {
-    submit: String, // submit handler name, 'onSubmit' by default,
-    fields: Array, // array of field objects
-  }
-  If there are more than one form on the page, then an array of models used:
-  [
-    { submit: onInsertSubmit, fields: [{...}, {...}] },
-    { submit: onRemoveSubmit, fields: [{...}, {...}] },
-    { submit: onUpdateSubmit, fields: [{...}, {...}] },
-    ...
-  ]
-
-  !!! Field names on a page must be unique !!!
-
-  If the form has only one field, you can do so:
-  { submit: 'onFormSubmit', fields: {...} }
-
-  field:
-    { fn: fieldName, type: [text(default), checkbox, picker, file],
-      vd: validator, init: initialValue, af: autoFocus, pp: postProcessing }
-
-  Methods:
-    __resetState(index),
-       index - index of form on page to reset, if 'all' - all forms will be resetted, default - 0
-    __setState(object of fields)
-*/
-
-Form.Model = {
-  submit: 'onSubmit', // this can be omitted, 'onSubmit' by default
+Form.model = {
+  submit: 'onSubmit',
   fields: [
     { fn: 'name', vd: 'required', pp: removeSpecial, af: true },
     { fn: 'address', vd: 'required', pp: removeSpecial },
-    { fn: 'visited', type: 'checkbox' },
-    { fn: 'favorite', type: 'checkbox', init: true },
-    { fn: 'category', type: 'picker', init: 5 },
+    { fn: 'category', type: 'picker' },
     { fn: 'coords', vd: 'isCoords', pp: removeSpecial },
-    { fn: 'zoom', vd: 'isDecimal' },
+    { fn: 'zoom' },
   ],
 };
 
-// Form.onFormMount = onFormMount;
+Form.onFormMount = onFormMount;
 
 export default Form;

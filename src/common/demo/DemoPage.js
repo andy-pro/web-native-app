@@ -13,20 +13,17 @@ import {
   IconButton,
   IconLink,
   Button,
-  Form,
-  TextInput,
-  Picker,
-  FileInput,
   Alert,
   Svg,
   Circle,
   Rect,
   SvgText,
+  // Form, TextInput, Picker, FileInput,
 } from '../components';
 import { colors, mainCSS } from '../styles';
 import FormDemo from './Form';
+import img from '../__components/img/react-tools.jpg';
 
-const img = require('./react-tools.png');
 const onPress = e => console.log('onPress event', e);
 const onLongPress = e => console.log('onLongPress event', e);
 const makeChoice = () => {

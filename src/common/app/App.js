@@ -15,8 +15,9 @@ import DemoPage from '../demo/DemoPage';
 import ListViewPage from '../lists/ListViewPage';
 import FlatListPage from '../lists/FlatListPage';
 import SectionListPage from '../lists/SectionListPage';
-import LongPressPage from '../editedlist/LongPressPage';
-import WrappedFormPage from '../editedlist/WrappedFormPage';
+import LongPressPage from '../lists/LongPressPage';
+import WrappedFormPage from '../wrappedform/WrappedFormPage';
+import EditedListPage from '../editedlist/EditedListPage';
 
 class App extends React.Component {
   componentDidMount() {
@@ -66,6 +67,7 @@ class App extends React.Component {
         <Page path="/sectionlist" component={SectionListPage} {...props} />
         <Page path="/longpress/:location?" component={LongPressPage} {...props} />
         <Page path="/formwrapper" component={WrappedFormPage} {...props} />
+        <Page path="/editedlist/:location?" component={EditedListPage} {...props} />
       </View>
     );
   }

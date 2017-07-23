@@ -5,12 +5,13 @@ import { View, SectionList } from '../components';
 import Dialogs from './Dialogs';
 import { mainCSS } from '../styles';
 
-const mapStateToProps = stateProps => state => {
+const mapStateToProps = (stateProps, userProps) => state => {
   let { app } = state,
     props = {
       command: app.command,
       entry: app.entry,
       sortMode: app.sortMode,
+      ...userProps,
     };
   stateProps.forEach(key => (props[key] = state[key]));
   return props;
@@ -21,12 +22,12 @@ export default ({
   stateProps,
   Form,
   onListMount,
-  renderSectionHeader,
-  renderItem,
+  renderProps,
   isDataChanged,
   toSections,
+  ...userProps
 }) =>
-  connect(mapStateToProps(stateProps), {
+  connect(mapStateToProps(stateProps, userProps), {
     /* actions */
     setCommand,
     setEntry,
@@ -81,8 +82,14 @@ export default ({
         });
 
       render() {
-        let { mode, sections } = this;
-        // console.log('this EDITED LIST render', mode);
+        // console.log('this EDITED LIST render', this.mode, this.props, renderProps);
+        let { mode, sections } = this,
+          {
+            renderSectionHeader,
+            renderItem,
+            renderSectionSeparator,
+            renderSeparator,
+          } = renderProps;
         return (
           <View style={[mainCSS.fullArea, mainCSS.limited]}>
             {Boolean(mode) && <Form mode={mode} listName={listName} {...this.props} />}
@@ -91,8 +98,8 @@ export default ({
               sections={sections}
               renderSectionHeader={renderSectionHeader}
               renderItem={renderItem.bind(this)}
-              ItemSeparatorComponent={() => <View style={mainCSS.divider} />}
-              SectionSeparatorComponent={() => <View style={mainCSS.vgap20} />}
+              SectionSeparatorComponent={renderSectionSeparator}
+              ItemSeparatorComponent={renderSeparator}
               keyExtractor={item => item.id}
             />
           </View>

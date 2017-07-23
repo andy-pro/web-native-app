@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, Image } from '../components';
 import { mainCSS } from '../styles';
-
-const img = require('./logo.png');
+import img from '../__components/img/logo.png';
 
 export default ({ history, layout }) => {
   let size = layout.height ? Math.min(310, layout.height - 150) : 310;

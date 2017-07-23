@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import app from '../app/reducer';
+import locations from '../locations/reducer';
 
 // stackoverflow.com/q/35622588/233902
 const resetStateOnSignOutReducer = (reducer, initialState) => (state, action) => {
@@ -20,6 +21,7 @@ const resetStateOnSignOutReducer = (reducer, initialState) => (state, action) =>
 const configureReducer = initialState => {
   let reducer = {
     app,
+    locations,
   };
 
   // The power of higher-order reducers, http://slides.com/omnidan/hor

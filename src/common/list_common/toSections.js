@@ -7,9 +7,8 @@ export default ({
   sortMode = { name: 'asc' },
 }) => {
   // sortModes = ['alpha', 'asc', 'desc'];
-  // console.log('locations to sections vars', categories, locations, match);
+  console.log('locations to sections vars', categories, locations, match);
   let ids = {},
-    noCategoryIndex,
     { category } = match.params;
   if (category) {
     categories = categories.filter(item => item.id === category);
@@ -30,16 +29,7 @@ export default ({
     let index = ids[item.category];
     if (index === undefined) {
       if (category) return;
-      if (noCategoryIndex === undefined) {
-        noCategoryIndex =
-          sections.push({
-            name: 'No category',
-            id: 'No-category',
-            key: 'No-category',
-            data: [],
-          }) - 1;
-      }
-      index = noCategoryIndex;
+      index = 0;
     }
     if (item.coords) {
       item.coords = item.coords.toString().replace(/,\s*/, ', ');
@@ -50,5 +40,9 @@ export default ({
   sections.forEach(section => {
     section.data = sortListByMode(section.data, sortMode.name);
   });
+  if (sections.length > 1) {
+    // 'no category' move to end
+    sections.push(sections.shift());
+  }
   return sections;
 };

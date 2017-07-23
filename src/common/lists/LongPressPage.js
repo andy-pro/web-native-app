@@ -8,10 +8,10 @@ import {
   renderSeparator,
   renderSectionHeader,
   renderSectionSeparator,
-} from './elements';
+} from '../list_common/elements';
+import toSections from '../list_common/toSections';
 import { mainCSS } from '../styles';
-import data from '../__data';
-import toSections from './toSections';
+import initialState from '../initialState';
 
 const listName = 'locations';
 
@@ -26,7 +26,7 @@ export default connect(({ app }) => ({ entry: app.entry }), { setEntry })(
       return (
         <SectionList
           contentContainerStyle={mainCSS.list}
-          sections={toSections(data)}
+          sections={toSections(initialState)}
           renderSectionHeader={renderSectionHeader.bind(this)}
           renderItem={renderItem.bind(this)}
           SectionSeparatorComponent={renderSectionSeparator}

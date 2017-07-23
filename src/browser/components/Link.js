@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-
-import { View, Text, TouchableOpacity, TouchableHighlight, AnchorLink } from './fela';
+import { Text, TouchableOpacity, TouchableHighlight, AnchorLink } from './fela';
 import { mainCSS } from '../styles';
 
 const TouchLink = ({ to, onNavigate, ...props }, { router }) =>
@@ -24,32 +23,6 @@ TouchLink.contextTypes = {
 
 export { TouchLink };
 
-/*
-export const Link = props =>
-  typeof props.to === 'function'
-    ? <Text onClick={props.to} style={mainCSS.t_link} />
-    : props.to.includes('://')
-      ? <AnchorLink
-          {...props}
-          href={props.to}
-          target="_blank"
-          style={[mainCSS.h_link, props.style]}
-        >
-          {props.message}
-        </AnchorLink>
-      : <View style={[props.style, mainCSS.v_link]}>
-          <NavLink
-            exact={props.exactly}
-            activeStyle={{ textDecoration: 'underline' }}
-            to={props.to}
-            style={mainCSS.a_link}
-          >
-            {props.message}
-            {props.children}
-          </NavLink>
-        </View>;
-*/
-
 export const Link = ({ to, exact, inline, style, message, children, ...props }) => {
   if (inline) style = Object.assign({}, style, mainCSS.inline);
   return typeof to === 'function'
@@ -65,5 +38,3 @@ export const Link = ({ to, exact, inline, style, message, children, ...props }) 
           </NavLink>
         </TouchableHighlight>;
 };
-
-// style={Object.assign({}, mainCSS.a_link, style.link)}

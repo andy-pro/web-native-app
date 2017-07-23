@@ -6,7 +6,7 @@ export default () =>
   <View style={[mainCSS.vgap20, { backgroundColor: colors.light, padding: 20 }]}>
     <Text style={{ fontSize: 14, color: colors.dark }}>
       <Text style={{ fontWeight: '600' }}>Purpose of the wrapper:</Text>
-      <Text style={{ fontSize: 13, whiteSpace: 'pre' }}>
+      <Text style={{ fontSize: 12, whiteSpace: 'pre' }}>
         {`\n
 - storage of form state inside the wrapper
 - all elements of the form are made controllable

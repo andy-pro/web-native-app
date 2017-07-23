@@ -1,13 +1,9 @@
 import React from 'react';
-// import { connect } from 'react-redux';
-
-// import { Route, withRouter, Redirect, View } from '../components';
 import { Route, Redirect, View } from '../components';
 import Header from './Header';
-// import Footer from './Footer';
-import RoundButton from './RoundButton';
+import RoundToolBar from './RoundToolBar';
 import { opts, mainCSS } from '../styles';
-import os from '../os';
+// import os from '../os';
 
 const minH = 400;
 
@@ -39,7 +35,8 @@ export default ({ component: Component, path = '', exact, dataReady, layout }) =
             */
           /* screen layout, width, position of the RoundButton */
           let root = urlParts[0],
-            isRoot = root === '/',
+            // isRoot = root === '/',
+            isEdit = root === '/editedlist',
             height = layout.height || minH,
             land = layout.isLandscape && height < minH,
             sideMenuMode = layout.width > opts.maxWidth + opts.menuWidth,
@@ -56,6 +53,10 @@ export default ({ component: Component, path = '', exact, dataReady, layout }) =
               <Header limitedCSS={limitedCSS} {...routerProps} />
               <View style={[mainCSS.fullArea, limitedCSS]}>
                 <Component {...routerProps} />
+                {isEdit &&
+                  <View style={[mainCSS.fullWidth, !land && mainCSS.limited]}>
+                    <RoundToolBar {...routerProps} />
+                  </View>}
               </View>
             </View>
           );
@@ -64,7 +65,5 @@ export default ({ component: Component, path = '', exact, dataReady, layout }) =
     />
   );
 };
-/*<View style={[mainCSS.fullWidth, !land && limited]}>
-                <RoundButton {...routerProps} />
-              </View>*/
+
 // {(isRoot || height >= minH) && <Footer />}

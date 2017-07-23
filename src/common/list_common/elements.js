@@ -3,12 +3,21 @@ import React from 'react';
 import { View, Text, TouchLink } from '../components';
 import { colors, mainCSS, sectionsCSS as styles } from '../styles';
 
+export const renderSectionHeader = ({ section }) =>
+  <View style={styles.header}>
+    <Text style={styles.title}>
+      {section.name}
+    </Text>
+  </View>;
+
+/*  To access the members of the class, we must use the classical function -
+    Function Declaration or Function Expression (not the arrow function).
+*/
 export function renderItem({ item }) {
-  // console.log('locations render row item', item);
-  let { entry } = this.props;
+  let { entry, urlParts } = this.props;
   return (
     <TouchLink
-      to={`/longpress/${item.id}`}
+      to={`${urlParts[0]}/${item.id}`}
       underlayColor={colors.touch}
       style={[styles.item, entry && entry.id === item.id && mainCSS.active]}
       onLongPress={() => this.onItemLongPress(item)}
@@ -45,13 +54,3 @@ export function renderItem({ item }) {
 export const renderSeparator = () => <View style={mainCSS.divider} />;
 
 export const renderSectionSeparator = () => <View style={mainCSS.vgap20} />;
-
-export function renderSectionHeader({ section }) {
-  return (
-    <View style={styles.header}>
-      <Text style={styles.title}>
-        {section.name}
-      </Text>
-    </View>
-  );
-}

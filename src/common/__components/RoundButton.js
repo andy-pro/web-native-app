@@ -1,37 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { setCommand } from '../app/actions';
-import { Text, TouchableHighlight } from '../components';
-import { roundBtnCSS, colors } from '../styles';
-import os from '../os';
+import { TouchableOpacity, Icon } from '../components';
+import { mainCSS } from '../styles';
 
-export default connect(
-  /* props */
-  ({ app }) => ({
-    command: app.command,
-  }),
-  /* actions */
-  { setCommand }
-)(({ urlParts, fullMapView, isMap, command, setCommand, history }) => {
-  let cmd = command && command.name,
-    path = urlParts[0],
-    hide = cmd === 'pre_insert' || cmd === 'pre_update' || path === '/';
-  return hide
-    ? null
-    : <TouchableHighlight
-        onPress={() => {
-          let _map = path === '/map',
-            payload = { name: 'pre_insert', path };
-          if (_map) payload.external = true;
-          setCommand(payload);
-          if (_map) {
-            setTimeout(() => history.push('/locations'), 0);
-          }
-        }}
-        style={[roundBtnCSS.button, isMap && os.isBrowser && { right: 50 }]}
-        underlayColor={colors.mainTouch}
-      >
-        <Text style={roundBtnCSS.text}>+</Text>
-      </TouchableHighlight>;
-});
-// activeOpacity={0.4}
+export default ({ setCommand, icon, color, size, cmd, entry }) =>
+  <TouchableOpacity
+    onPress={() => setCommand({ name: cmd, path: 'locations', entry })}
+    activeOpacity={0.5}
+    style={[
+      mainCSS.roundBtn,
+      {
+        backgroundColor: color,
+        borderRadius: size,
+        width: size * 2,
+        height: size * 2,
+      },
+    ]}
+  >
+    <Icon name={icon} size={size * 1.25} />
+  </TouchableOpacity>;

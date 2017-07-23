@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { setCommand, setSortMode, appShowMenu } from '../app/actions';
-import { findNameByUrl } from '../__lib/find';
-import { View, Text, IconButton, Dialogs } from '../components';
+// import { findNameByUrl } from '../__lib/find';
+import { View, Text, IconButton } from '../components';
 import { opts, mainCSS, colors, iconColors } from '../styles';
 import os from '../os';
 
-const setHighlight = (icon, props) =>
-  icon.key === props.mapViewMode ? iconColors.main : iconColors.disabled;
+// const setHighlight = (icon, props) =>
+//   icon.key === props.mapViewMode ? iconColors.main : iconColors.disabled;
 
 // prettier-ignore
 const icons = {
@@ -16,7 +16,7 @@ const icons = {
   menu: { key: 'menu', title: 'Menu', name: 'md-menu', act: 'toggleMenu' },
   back: { key: 'back', title: 'Back', name: 'md-arrow-back', act: 'goBack' },
   add: { key: 'add', title: 'Add', name: 'md-add-circle', cmd: 'pre_insert' },
-  remove: { key: 'remove', title: 'Remove', name: 'md-remove-circle', confirm: 'deleteConfirm', dis: true },
+  remove: { key: 'remove', title: 'Remove', name: 'md-remove-circle', cmd: 'remove', dis: true },
   edit: { key: 'edit', title: 'Edit', name: 'md-edit', cmd: 'pre_update', dis: true},
   map: { key: 'map', title: 'Map view', name: 'md-public' },
   sort0: { key: 'sort0', title: 'Sort by alpha', name: 'fa-sort-alpha-asc', act: 'nextSort' },
@@ -31,8 +31,8 @@ const ToolBar = props => {
       entry,
       sortMode,
       layout,
-      categories,
-      locations,
+      // categories,
+      // locations,
       setCommand,
       setSortMode,
       appShowMenu,
@@ -71,10 +71,7 @@ const ToolBar = props => {
   const __cmd = icon => {
     if (icon.to) return history.push(icon.to);
     if (icon.act) return actions[icon.act](icon);
-    let cb = () => setCommand({ name: icon.cmd || icon.key, path, entry });
-    if (icon.confirm) {
-      Dialogs[icon.confirm](entryName, cb);
-    } else cb();
+    setCommand({ name: icon.cmd || icon.key, path, entry });
   };
 
   const iconSet = key => {
@@ -120,13 +117,13 @@ const ToolBar = props => {
 };
 
 export default connect(
-  ({ app, categories, locations }) => ({
+  ({ app }) => ({
     entry: app.entry,
     sortMode: app.sortMode,
-    mapViewMode: app.mapViewMode,
+    // mapViewMode: app.mapViewMode,
     // layout: app.layout,
-    categories,
-    locations,
+    // categories,
+    // locations,
   }),
   { setCommand, setSortMode, appShowMenu }
 )(ToolBar);

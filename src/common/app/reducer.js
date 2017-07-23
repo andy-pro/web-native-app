@@ -1,5 +1,5 @@
-import { REHYDRATE } from 'redux-persist/constants';
-import __initialState from '../initialState';
+// import { REHYDRATE } from 'redux-persist/constants';
+// import __initialState from '../initialState';
 import os from '../os';
 
 const initialState = {
@@ -19,6 +19,7 @@ const initialState = {
   locales: null,
   messages: null,
   layout: {},
+  sortMode: { index: 1, name: 'asc' },
 };
 
 const sortModes = ['alpha', 'asc', 'desc'];
@@ -112,6 +113,7 @@ const reducer = (state = initialState, action) => {
       }
       return state;
 
+    // this is the care of the autoRehydrate({stateReconciler})
     // process all the keys listed in 'config/storage.path
     // case REHYDRATE:
     //   let app = payload.app || __initialState.app;

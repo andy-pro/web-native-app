@@ -8,22 +8,31 @@ import config from '../config';
 
 const configureStore = options => {
   const { initialState, platformDeps = {}, platformMiddleware = [] } = options;
-
   const reducer = configureReducer(initialState);
-
   const middleware = configureMiddleware(initialState, platformDeps, platformMiddleware);
+  const storageConfig = configureStorage(
+    initialState,
+    config.appName,
+    platformDeps.storageEngine
+  );
 
   const store = createStore(
     reducer,
     undefined,
     // initialState,
     /* comment, if REHYDRATE from 'redux-peersist' used;
-       in this case initialState merged with state in reducers (REHYDRATE actions) */
-    compose(applyMiddleware(...middleware), autoRehydrate({ log: true }))
+       in this case initialState merged with state in reducers (REHYDRATE actions)
+       or use 'stateReconciler' function */
+    compose(
+      applyMiddleware(...middleware),
+      autoRehydrate({
+        stateReconciler: storageConfig.stateReconciler,
+      })
+    )
   );
 
   if (platformDeps.storageEngine) {
-    persistStore(store, configureStorage(config.appName, platformDeps.storageEngine));
+    persistStore(store, storageConfig);
   }
 
   // Enable hot reloading for reducers.

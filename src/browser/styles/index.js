@@ -3,7 +3,6 @@ import { opts, colors, iconColors } from '../../common/const';
 export { colors, iconColors, opts };
 export { headerCSS, sideCSS } from './header';
 export { sectionsCSS } from './sections';
-export { roundBtnCSS } from './roundBtn';
 
 // alignItems: flex-start | flex-end | center | baseline | stretch (default)
 // justifyContent: flex-start (default) | flex-end | center | space-between | space-around
@@ -208,6 +207,20 @@ export const mainCSS = {
   f_link: {
     color: colors.light,
     fontSize: opts.fontSize * 0.8,
+  },
+
+  /* RoundToolBar */
+  roundToolBar: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+  },
+  roundBtn: {
+    display: 'flex',
+    ...center,
+    marginLeft: 15,
+    opacity: 0.6,
+    boxShadow: '2px 2px 15px black',
   },
 };
 
