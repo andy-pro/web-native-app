@@ -20,6 +20,7 @@ const initialState = {
   messages: null,
   layout: {},
   sortMode: { index: 1, name: 'asc' },
+  importedData: null,
 };
 
 const sortModes = ['alpha', 'asc', 'desc'];
@@ -40,7 +41,6 @@ const reducer = (state = initialState, action) => {
   // In the browser, we prefer local error messages rendering.
   // TODO: Refactor it. We don't want sticky strings.
   if (type.endsWith('_FAIL')) {
-    // $FlowFixMe
     state = { ...state, error: payload.error };
   }
 
@@ -112,6 +112,14 @@ const reducer = (state = initialState, action) => {
         if (state.command && state.command.name === 'pre_update') state.command = null;
       }
       return state;
+
+    case 'db/IMPORTED_DATA':
+    case 'notify/db/IMPORTED_DATA':
+      let { mode, data } = payload;
+      if (mode === 'merge') {
+        data = state.importedData + data;
+      }
+      return { ...state, importedData: data };
 
     // this is the care of the autoRehydrate({stateReconciler})
     // process all the keys listed in 'config/storage.path

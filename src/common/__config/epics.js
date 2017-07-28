@@ -2,9 +2,20 @@ import 'rxjs';
 import { combineEpics } from 'redux-observable';
 
 import { epics as appEpics } from '../app/actions';
+import { epics as backupEpics } from '../backup/actions';
 
-const epics = [...appEpics];
+// prettier-ignore
+const epics = [
+  ...appEpics,
+  ...backupEpics,
+];
 
+/* inject deps:
+    config,
+    storageEngine,
+    backup,
+    messages,
+*/
 const configureEpics = deps => (action$, { dispatch, getState }) =>
   combineEpics(...epics)(action$, { ...deps, dispatch, getState });
 

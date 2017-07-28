@@ -1,7 +1,10 @@
-import { Alert } from './';
+import { Alert } from '../components';
+import os from '../os';
 
-const notify = ({ header, message, extra = '' }, T) => {
+export default ({ header, message, extra = '' }) => {
   setTimeout(() => {
+    // console.log('T', header, message, extra);
+    let T = os.messages;
     if (extra) {
       let [tmpl, ...rest] = extra;
       extra = T.formatString(T[tmpl], ...rest);
@@ -9,5 +12,3 @@ const notify = ({ header, message, extra = '' }, T) => {
     Alert.alert(T[header], T[message] + extra);
   }, 0);
 };
-
-export default notify;

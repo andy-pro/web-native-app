@@ -270,6 +270,12 @@ autoprefixer@6.7.2, autoprefixer@^6.3.1:
     postcss "^5.2.11"
     postcss-value-parser "^3.2.3"
 
+autosuggest-highlight@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/autosuggest-highlight/-/autosuggest-highlight-3.1.0.tgz#d5df5115b4840af49f2370a8fb88e5ce9b461ef9"
+  dependencies:
+    diacritic "0.0.2"
+
 aws-sign2@~0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.6.0.tgz#14342dd38dbcc94d0e5b87d763cd63612c0e794f"
@@ -1957,6 +1963,10 @@ detect-port@1.1.0:
   resolved "https://registry.yarnpkg.com/detect-port/-/detect-port-1.1.0.tgz#fde7574591ea3de74445782643c3f921b2a4618c"
   dependencies:
     debug "^2.6.0"
+
+diacritic@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/diacritic/-/diacritic-0.0.2.tgz#fc2a887b5a5bc0a0a854fb614c7c2f209061ee04"
 
 diff@^3.0.0:
   version "3.2.0"
@@ -5232,10 +5242,6 @@ react-native-fs@^2.3.3:
 react-native-localization@0.1.26:
   version "0.1.26"
   resolved "https://registry.yarnpkg.com/react-native-localization/-/react-native-localization-0.1.26.tgz#56b47895a4f30ef3e206938b1ccb2f836249fc64"
-
-react-native-maps@0.15.1:
-  version "0.15.1"
-  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.15.1.tgz#251f4b5a0439ce1f29e2e3a3fb54f63cbf721b4d"
 
 react-native-svg@4.6.1:
   version "4.6.1"

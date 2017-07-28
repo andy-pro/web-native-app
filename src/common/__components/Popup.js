@@ -1,84 +1,82 @@
-import React from 'react'
+import React from 'react';
 
-import AutosuggestHighlightParse from 'autosuggest-highlight/parse'
+import AutosuggestHighlightParse from 'autosuggest-highlight/parse';
 
-import { View, Text, ListView, TouchableHighlight } from './';
-import { suggestionsCSS as styles } from '../__themes'
-import __config from '../config'
+import { View, Text, ListView, TouchableHighlight } from '../components';
+import { suggestionsCSS as styles } from '../styles';
+import os from '../os';
 
-
-export class Popup extends React.Component {
+export default class Popup extends React.Component {
   getChildContext() {
     return {
       popup: {
-        init: this.init,
-        // triggerAutosuggestMenu: this.triggerAutosuggestMenu,
-        // color: 'white',
-        // onKeyDown: this.onKeyDown,
-        // onTargetBlur: this.onTargetBlur,
-        // renderSimple: this.renderSimple,
-        // renderHighlight: this.renderHighlight,
-      }
-    }
+        init: (popups, fields) => {
+          this.popups = popups;
+          this.fields = fields;
+          this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+          return {
+            popups,
+            onKeyDown: this.onKeyDown,
+            onBlur: this.onBlur,
+            trigger: this.triggerMenu,
+          };
+        },
+      },
+    };
   }
 
   constructor(props) {
     // console.log('popup constructor');
-    super(props)
+    super(props);
     this.state = {
       showMenu: false,
       selectedIndex: -1,
-    }
-  }
-
-  init = popups => {
-    this.popups = popups
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-    popups.__onKeyDown = this.onKeyDown
-    popups.__onBlur = this.onBlur
-    return this.triggerMenu
+    };
   }
 
   triggerMenu = fields => {
+    // prevent repetitive re-render
+    if (fields === this.fields) return;
+    this.fields = fields;
 
-    let popup = this.popups[fields.__name]
+    let popup = this.popups[fields.__name];
+    this.popup = popup;
+    if (!popup) return;
 
-    this.popup = popup
-
-    if (!popup) return
-
-    popup.query = fields.__query
-    popup.element = fields.__element
-    // console.log('trigger', this.popup.name);
+    popup.query = fields.__query;
+    popup.element = fields.__element;
+    // console.log('try trigger', fields, this.popup, this.itemWasSelected);
     if (this.itemWasSelected) {
-      // выбор пункта меню заполнит поле TextInput и вследствие этого сработает событие onChangeText
-      // вот его и нужно проигнорировать, иначе выпадающий список появится опять
-      this.itemWasSelected = false
-      return
-      // console.log('resetting select');
+      /*  если после выбора пункта меню заполнять поле TextInput  методом
+          this.props.fields.field.onChangeText(value)
+          то сработает событие onChangeText - его нужно проигнорировать, 
+          иначе выпадающий список появится опять */
+      this.itemWasSelected = false;
+      console.log('resetting select');
+      return;
     }
 
-    let trigger = () => this.setState({ showMenu, selectedIndex })
+    let trigger = () => this.setState({ showMenu, selectedIndex });
 
-    let { query, element, pos, getSuggestions, popupOnEmpty } = popup,
-        suggestions = query || popupOnEmpty ? getSuggestions(query) : [],
-        len = suggestions.length,
-        showMenu = Boolean(len),
-        selectedIndex = -1
-    this.suggestions = suggestions
+    let { query, list, key, element, pos, getSuggestions, popupOnEmpty } = popup,
+      suggestions = query || popupOnEmpty ? getSuggestions(query, list, key) : [],
+      len = suggestions.length,
+      showMenu = Boolean(len),
+      selectedIndex = -1;
+    this.suggestions = suggestions;
     // console.log('trigger start', this.itemWasSelected, popup.query, len);
     if (showMenu) {
       if (len === 1) {
-        suggestions[0].selected = true
-        selectedIndex = 0
+        suggestions[0].__selected = true;
+        selectedIndex = 0;
       }
       if (element) {
         /* Offsets: ReactNative = -12; Browser = 30 */
-        // console.log('before measure, native:', __config.isNative);
-        if (__config.isNative) {
-          element.measure( (fx, fy, width, height, px, py) => {
+        // console.log('before measure, native:', os.isNative);
+        if (os.isNative) {
+          element.measure((fx, fy, width, height, px, py) => {
             // fx, fy - offset to frame; px, py - offset to page
-            this.position = { ...pos, top: py - 12 }
+            this.position = { ...pos, top: py - 12 };
             // console.log('after measure, fy:', fy, 'pos:', py);
 
             /*
@@ -90,18 +88,18 @@ export class Popup extends React.Component {
             console.log('py', py);
             */
 
-            trigger()
-          })
+            trigger();
+          });
         } else {
-          this.position = { ...pos, top: 30 +  element.offsetTop }
-          trigger()
+          this.position = { ...pos, top: 30 + element.offsetTop };
+          trigger();
         }
       }
-    } else trigger()
-  }
+    } else trigger();
+  };
 
   componentWillUnmount() {
-    clearTimeout(this.__timeout)
+    clearTimeout(this.__timeout);
   }
 
   onBlur = () => {
@@ -111,132 +109,190 @@ export class Popup extends React.Component {
         // console.log('timeout');
         // if (!this.itemWasSelected) this.setState({ showMenu: false })
         // if (!this.state.popup.itemWasSelected) {
-        if (this.state.showMenu)
-          this.setState({ showMenu: false })
-      })
+        if (this.state.showMenu) this.setState({ showMenu: false });
+      });
     }
-  }
+  };
 
   onKeyDown = e => {
-    let { showMenu, selectedIndex: si } = this.state
-    this.itemWasSelected = false
+    let { showMenu, selectedIndex: si } = this.state;
+    this.itemWasSelected = false;
 
     const changeSelected = nextIndex => {
-      e.preventDefault()
-      this.suggestions.forEach((item, i) => item.selected = i === nextIndex)
-      this.setState({ selectedIndex: nextIndex })
-    }
+      e.preventDefault();
+      this.suggestions.forEach((item, i) => (item.__selected = i === nextIndex));
+      this.setState({ selectedIndex: nextIndex });
+    };
 
     // console.log('key down', e.key );
     if (showMenu) {
       switch (e.key) {
         case 'Enter':
-          let s = this.suggestions.find(item => item.selected)
+          let s = this.suggestions.find(item => item.__selected);
           if (s) {
-            e.preventDefault()
-            this.selectSuggestion(s)
+            e.preventDefault();
+            this.selectSuggestion(s);
           }
-          return
+          return;
         case 'ArrowDown':
-          if (si < this.suggestions.length - 1) changeSelected(++si)
-          return
+          if (si < this.suggestions.length - 1) changeSelected(++si);
+          return;
         case 'ArrowUp':
-          if (si > 0) changeSelected(--si)
-          return
+          if (si > 0) changeSelected(--si);
+          return;
         case 'Escape':
-          this.setState({ showMenu: false })
+          this.setState({ showMenu: false });
       }
     }
-  }
+  };
 
   selectSuggestion = s => {
-    // console.log('selectSuggestion', this.popup.name);
-    this.popup.onSelect(s, this.popup)
+    // console.log('selectSuggestion', this.popup);
+    this.popup.onSelect(s, this.popup);
     if (!this.popup.popupOnEmpty) {
-      this.itemWasSelected = true
+      this.itemWasSelected = true;
     }
-    this.setState({ showMenu: false })
-  }
+    this.setState({ showMenu: false });
+  };
 
   renderSuggestion = suggestion => {
-    let { popup } = this
+    let { popup } = this;
     return (
       <TouchableHighlight
         onPress={() => this.selectSuggestion(suggestion)}
-        underlayColor='#bbb'
+        underlayColor="#bbb"
         $ref={c => {
-          if (suggestion.selected && c)
-            c.scrollIntoViewIfNeeded(false)
-        }}>
+          if (suggestion.__selected && c) c.scrollIntoViewIfNeeded(false);
+        }}
+      >
         {popup.renderSuggestion(suggestion, popup)}
       </TouchableHighlight>
-    )
-  }
+    );
+  };
 
   render() {
     // console.log('popup menu renderer', this.state.showMenu);
     // console.log('popup menu renderer', Object.keys(this.props.children));
     return (
       <View style={styles.root}>
-
         {this.props.children}
 
-        {(this.state.showMenu && this.popup && this.popup.renderSuggestion) &&
-          <View style={[styles.list, this.position]}>
-            <ListView
-              dataSource={this.ds.cloneWithRows(this.suggestions)}
-              keyboardShouldPersistTaps='always'
-              enableEmptySections={true}
-              renderRow={this.renderSuggestion}
-            />
-          </View>
-        }
+        {this.state.showMenu &&
+          this.popup &&
+          this.popup.renderSuggestion &&
+          <ListView
+            contentContainerStyle={[styles.list, this.position]}
+            dataSource={this.ds.cloneWithRows(this.suggestions)}
+            keyboardShouldPersistTaps="always"
+            enableEmptySections={true}
+            renderRow={this.renderSuggestion}
+          />}
       </View>
     );
   }
-
 }
 
 Popup.childContextTypes = {
-  popup: React.PropTypes.object
-}
+  popup: React.PropTypes.object,
+};
 
+/*~~~~~~~~~~~~~~suggestion finders~~~~~~~~~~~~~~*/
+
+export const FindSimple = (query, list, key) => {
+  query = query.toLowerCase();
+  return list
+    .filter(item => item[key].toLowerCase().startsWith(query))
+    .map(item => ({ ...item }));
+};
+
+const parseHighlight = (str, query) => {
+  let re = new RegExp('\\b' + query, 'ig'),
+    parts = [],
+    start = 0,
+    res,
+    text;
+  while ((res = re.exec(str)) != null) {
+    text = str.slice(start, res.index);
+    if (text) parts.push({ text });
+    parts.push({
+      text: res[0],
+      highlight: true,
+    });
+    start = re.lastIndex;
+  }
+  if (start) {
+    // at least one match was occured
+    if ((text = str.slice(start)) !== '') {
+      parts.push({ text });
+    }
+    return parts;
+  }
+  return false;
+};
+
+export const FindMultiword = (query, list, key) =>
+  list.reduce((res, item) => {
+    // console.log('key', key);
+    let __parts = parseHighlight(item[key], query);
+    if (__parts) {
+      res.push({ ...item, __parts });
+    }
+    return res;
+  }, []);
 
 /*~~~~~~~~~~~~~~~~render helpers~~~~~~~~~~~~~~~~*/
 
-// PopupMenu.renderHighlight = ({ title, selected }, { query }) => {
-export const RenderHighlight = ({ title, selected }, { query }) => {
-  // { query, title: 'xxx' or ['xxx', {highlight: 'yyy'}, 'zzz', ...], selected }
+const renderItem = (item, selected) =>
+  <View style={selected ? styles.selected : styles.view}>
+    {item}
+  </View>;
+
+export const RenderMultiword = ({ __parts, __selected }, { query }) => {
+  const item = (
+    <Text style={styles.text}>
+      {__parts.map((part, i) =>
+        <Text key={i} style={part.highlight ? styles.highlight : null}>
+          {part.text}
+        </Text>
+      )}
+    </Text>
+  );
+  return renderItem(item, __selected);
+};
+
+export const RenderHighlight = (suggestion, { key, query }) => {
+  // console.log('suggestion', suggestion, key, query);
+  let words = suggestion[key];
+  // { query, words: 'xxx' or ['xxx', {highlight: 'yyy'}, 'zzz', ...], suggestion.__selected }
   // 'xxx' => [{ highlight: 'xxx' }]
-  let words = Array.isArray(title) ? title : [{ highlight: title }]
-  const item =
+  if (!Array.isArray(words)) words = [{ highlight: words }];
+  const item = (
     <Text style={styles.text}>
       {words.map((word, i) => {
         if (typeof word === 'object') {
           const matches = [[0, query.length]];
           const parts = AutosuggestHighlightParse(word.highlight, matches);
           return parts.map((part, index) => {
-            let props = { key: index }
-            if (part.highlight) props.style = styles.highlight
-            return <Text {...props}>{part.text}</Text>
-          })
-        } else return word
+            let props = { key: index };
+            if (part.highlight) props.style = styles.highlight;
+            return (
+              <Text {...props}>
+                {part.text}
+              </Text>
+            );
+          });
+        } else return word;
       })}
     </Text>
-  return renderItem(item, selected)
-}
+  );
+  return renderItem(item, suggestion.__selected);
+};
 
-export const RenderSimple = ({ title, selected }) => {
-  const item =
+export const RenderSimple = (suggestion, { key }) => {
+  const item = (
     <Text style={styles.text}>
-      {title}
+      {suggestion[key]}
     </Text>
-  return renderItem(item, selected)
-}
-
-const renderItem = (item, selected) =>
-  <View style={selected ? styles.selected : styles.view}>
-    {item}
-  </View>
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  );
+  return renderItem(item, suggestion.__selected);
+};

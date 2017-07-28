@@ -1,13 +1,33 @@
 import { sortListByMode } from '../__lib/utils';
 
-export default ({
+export const presidentSplitter = data => {
+  let sections = [],
+    indexes = {};
+  data.forEach(item => {
+    let { party, ...rest } = item,
+      index = indexes[party];
+    if (index === undefined) {
+      index =
+        sections.push({
+          key: party,
+          name: party,
+          data: [],
+        }) - 1;
+      indexes[party] = index;
+    }
+    sections[index].data.push({ ...rest });
+  });
+  return sections;
+};
+
+export const locationSplitter = ({
   categories,
   locations,
   match = { params: {} },
   sortMode = { name: 'asc' },
 }) => {
   // sortModes = ['alpha', 'asc', 'desc'];
-  console.log('locations to sections vars', categories, locations, match);
+  // console.log('locations to sections vars', categories, locations, match);
   let ids = {},
     { category } = match.params;
   if (category) {

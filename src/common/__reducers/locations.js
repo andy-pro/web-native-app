@@ -2,7 +2,7 @@
 import { cmdUpdateLocal } from '../__lib/utils';
 // import initialState from '../initialState';
 
-const reducer = (state = [], action) => {
+export default (state = [], action) => {
   switch (action.type) {
     // this is the care of the autoRehydrate({stateReconciler})
     // case REHYDRATE:
@@ -17,5 +17,3 @@ const reducer = (state = [], action) => {
       return state;
   }
 };
-
-export default reducer;

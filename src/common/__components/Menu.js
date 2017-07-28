@@ -30,10 +30,9 @@ export default ({ appShowMenu, style }) => {
       <MenuLink to="/longpress" />
       <MenuLink to="/formwrapper" />
       <MenuLink to="/editedlist" />
-      <MenuLink to="/backup" />
       <MenuLink to="/autosuggest" />
-      <MenuLink to="/localdb" />
-      <MenuLink to="/remotedb" />
+      <MenuLink to="/backup" />
+      <MenuLink to="/fetch" />
       <MenuLink to="/localization" />
       <Divider />
       <MenuLink to="/about" />

@@ -4,15 +4,16 @@ import { NavLink } from 'react-router-dom';
 // import { View, Text, TouchableOpacity, TouchableHighlight } from '../fela';
 import { View, Text, TouchableOpacity } from './fela';
 import Icon from '../../common/__components/Icon';
-import { mainCSS, iconColors } from '../styles';
+import { opts, mainCSS, iconColors } from '../styles';
 import os from '../../common/os';
 
 export { Icon };
+const _size = opts.fontSize;
 
 const IconButtonBase = ({
   message,
   children,
-  size = os.isTouchDevice ? 16 : 15,
+  size = os.isTouchDevice ? _size : _size - 1,
   color = iconColors.main,
   name,
 }) => {

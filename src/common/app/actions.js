@@ -54,6 +54,12 @@ export const resetForm = () => ({
   type: 'RESET_FORM',
 });
 
+export const setImportedData = (payload, opts) => ({
+  type: (opts.notify ? 'notify/' : '') + 'db/IMPORTED_DATA',
+  payload,
+  opts,
+});
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 export const setCommand = payload => {
   let { name, path, entry, opts } = payload;

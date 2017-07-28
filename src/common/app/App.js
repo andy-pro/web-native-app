@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { appStart, appStop, appLayout, resetForm } from './actions';
-import { View, withRouter } from '../components';
+import { View, Notify, withRouter } from '../components';
 
 import Page from '../__components/Page';
 import config from '../../common/config';
@@ -18,6 +18,9 @@ import SectionListPage from '../lists/SectionListPage';
 import LongPressPage from '../lists/LongPressPage';
 import WrappedFormPage from '../wrappedform/WrappedFormPage';
 import EditedListPage from '../editedlist/EditedListPage';
+import PopupDemoPage from '../autosuggest/PopupDemoPage';
+import BackupPage from '../backup/BackupPage';
+import AjaxDemoPage from '../ajax/AjaxDemoPage';
 
 class App extends React.Component {
   componentDidMount() {
@@ -43,6 +46,10 @@ class App extends React.Component {
   shouldComponentUpdate(nextProps) {
     // console.log('nextProps', Object.keys(nextProps.location));
     // console.log('nextProps', nextProps.location.pathname);
+    if (nextProps.notify !== this.props.notify) {
+      Notify(nextProps.notify);
+      return false;
+    }
     return (
       nextProps.layout !== this.props.layout ||
       nextProps.location.pathname !== this.props.location.pathname ||
@@ -68,6 +75,9 @@ class App extends React.Component {
         <Page path="/longpress/:location?" component={LongPressPage} {...props} />
         <Page path="/formwrapper" component={WrappedFormPage} {...props} />
         <Page path="/editedlist/:location?" component={EditedListPage} {...props} />
+        <Page path="/autosuggest" component={PopupDemoPage} {...props} />
+        <Page path="/backup" component={BackupPage} {...props} />
+        <Page path="/fetch" component={AjaxDemoPage} {...props} />
       </View>
     );
   }
@@ -76,6 +86,7 @@ class App extends React.Component {
 export default withRouter(
   connect(
     ({ app }) => ({
+      notify: app.notify,
       command: app.command,
       dataReady: app.dataReady,
       layout: app.layout,

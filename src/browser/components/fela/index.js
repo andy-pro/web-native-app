@@ -9,7 +9,8 @@ export const Text = create('span', [
   'onLongPress', // onLongPress must be after onPress (onPress re-writing)
 ]);
 
-export const View = create('div', ['data-path', 'onKeyDown', 'onPress', '$ref']);
+// export const View = create();
+export const View = create('div', ['data-path', 'onKeyDown', 'onPress']);
 
 export const AnchorLink = create('a', ['download', 'href', 'target']);
 
@@ -24,22 +25,21 @@ export const Button = ({ title, color, style = {}, ...props }) => {
   );
 };
 
-create('button', ['onPress', 'title']);
-
-export const TextInput = create('input', [
+const input_props = [
   'required',
   'placeholder',
   'onChangeText',
   'value',
+  'defaultValue',
   'autoFocus',
   'onFocus',
   'onBlur',
-  '$ref',
   'editable',
-  'step',
-  { type: 'text' },
-]);
+  '$ref',
+];
 
+export const TextInput = create('input', input_props.concat([{ type: 'text' }]));
+export const TextArea = create('textarea', input_props.concat(['numberOfLines']));
 export const FileInput = create('input', ['onChangeText', '$ref', { type: 'file' }]);
 
 // hidden button for submit
@@ -98,14 +98,16 @@ const svg_props = [
   'strokeWidth',
   'fill',
 ];
-const svg_text_props = ['fontSize', 'fontWeight', 'textAnchor'];
 
 export const Svg = create('svg', ['width', 'height', 'viewBox']);
 export const G = create('g', svg_props);
 export const Path = create('path', ['d']);
 export const Circle = create('circle', svg_props);
 export const Rect = create('rect', svg_props);
-export const SvgText = create('text', svg_props.concat(svg_text_props));
+export const SvgText = create(
+  'text',
+  svg_props.concat(['fontSize', 'fontWeight', 'textAnchor'])
+);
 
 /*
 Common props:

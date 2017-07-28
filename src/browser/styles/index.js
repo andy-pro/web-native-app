@@ -3,6 +3,7 @@ import { opts, colors, iconColors } from '../../common/const';
 export { colors, iconColors, opts };
 export { headerCSS, sideCSS } from './header';
 export { sectionsCSS } from './sections';
+export { suggestionsCSS } from './suggestions';
 
 // alignItems: flex-start | flex-end | center | baseline | stretch (default)
 // justifyContent: flex-start (default) | flex-end | center | space-between | space-around
@@ -21,7 +22,9 @@ export const mainCSS = {
   root: {
     ...col,
     fontFamily: opts.fontFamily,
+    fontSize: opts.fontSize,
     backgroundColor: colors.background,
+    color: colors.dark,
     height: '100vh',
     alignItems: 'center',
   },
@@ -149,6 +152,7 @@ export const mainCSS = {
     marginHorizontal: 5,
     transition: 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
     ...colors.border,
+    backgroundColor: colors.background,
   },
   button: {
     display: 'flex',
@@ -157,8 +161,6 @@ export const mainCSS = {
     alignItems: 'center',
     padding: 3,
     cursor: 'pointer',
-    // paddingHorizontal: 2,
-    // paddingVertical: 1,
     marginHorizontal: 5,
   },
   prompt: {
@@ -224,6 +226,8 @@ export const mainCSS = {
   },
 };
 
+mainCSS.picker = () => Object.assign({}, mainCSS.input, { paddingVertical: 3 });
+
 export const checkboxCSS = {
   input: {
     marginHorizontal: 5,
@@ -242,8 +246,6 @@ export const checkboxCSS = {
   },
 };
 
-mainCSS.picker = mainCSS.input;
-
 const menuImg = require('../../common/__components/img/background.jpg');
 
 export const menuCSS = {
@@ -251,11 +253,6 @@ export const menuCSS = {
     backgroundImage: `url(${menuImg})`,
     backgroundSize: '100% 100%',
     width: opts.menuWidth - opts.gaps,
-    // position: 'absolute',
-    // position: 'fixed',
-    // zIndex: 10,
-    // top: 50,
-    // right: 40,
     boxShadow: '2px 2px 5px ' + colors.middle,
     ...colors.border,
   },
@@ -267,7 +264,8 @@ export const menuCSS = {
       textDecoration: 'none',
       display: 'block',
       userSelect: 'none',
-      padding: '8px 30px',
+      // padding: '8px 30px',
+      padding: `${opts.fontSize / 2}px ${opts.fontSize * 2}px`,
       color: colors.silver,
     },
   },

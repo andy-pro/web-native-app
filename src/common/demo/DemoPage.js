@@ -23,6 +23,7 @@ import {
 import { colors, mainCSS } from '../styles';
 import FormDemo from './Form';
 import img from '../__components/img/react-tools.jpg';
+import __data from '../__data';
 
 const onPress = e => console.log('onPress event', e);
 const onLongPress = e => console.log('onLongPress event', e);
@@ -127,16 +128,7 @@ export default ({ history, layout }) => {
           <Text style={{ fontStyle: 'italic' }}>ScrollView</Text>
           <ScrollView style={[border, { height: 140 }]}>
             <Text>
-              Velit laborum aliquip voluptate incididunt dolore qui proident velit
-              adipisicing. Pariatur sint fugiat aute eiusmod aute aliquip dolor culpa enim
-              quis. Ea elit ad duis cillum et aliquip. Elit aliquip enim ut quis tempor.
-              Veniam irure minim esse proident culpa Lorem duis veniam dolor anim quis
-              laboris id laboris. Enim minim eiusmod labore do consectetur voluptate
-              pariatur cillum fugiat dolore magna incididunt. Qui eiusmod Lorem qui irure
-              consequat. Consectetur velit officia eiusmod esse labore sint anim nostrud
-              elit nulla dolore dolor. In aute ad incididunt pariatur cupidatat do
-              deserunt irure. Exercitation cillum enim incididunt amet Lorem ut Lorem
-              nulla.
+              {`${__data.lorem} ${__data.ipsum}`}
             </Text>
           </ScrollView>
         </View>

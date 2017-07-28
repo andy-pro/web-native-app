@@ -1,13 +1,14 @@
-const _main_ = '#00A4D3';
+const _main_ = '#00A4D3',
+  fontSize = 14;
 
 export const opts = {
   fontFamily: 'Arial, sans-serif',
   gaps: 15,
   headerH: 66,
   footerH: 44,
-  fontSize: 15,
+  fontSize,
   maxWidth: 450,
-  menuWidth: 200,
+  menuWidth: fontSize * 13,
 };
 
 export const colors = {
@@ -17,7 +18,8 @@ export const colors = {
   footer: _main_,
   menu: 'white',
   // submain: '#e0e4f8',
-  submain: '#ded',
+  // submain: '#ded',
+  submain: '#ddf',
   drawer: '#333',
   mainTouch: '#688',
   touch: '#eee',

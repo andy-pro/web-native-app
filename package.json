@@ -19,6 +19,7 @@
     "log": "node node_modules/react-native/local-cli/cli.js log-android"
   },
   "dependencies": {
+    "autosuggest-highlight": "^3.1.0",
     "fela": "^4.3.5",
     "fela-plugin-validator": "^4.3.5",
     "fela-preset-web": "^4.3.5",

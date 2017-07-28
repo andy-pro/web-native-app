@@ -13,15 +13,26 @@ export const renderSectionHeader = ({ section }) =>
 /*  To access the members of the class, we must use the classical function -
     Function Declaration or Function Expression (not the arrow function).
 */
-export function renderItem({ item }) {
-  let { entry, urlParts } = this.props;
+export function renderRow({ item }, __item) {
+  // __item - original item (without adapter)
+  let linkProps = {
+    underlayColor: colors.touch,
+    style: [styles.item],
+  };
+  if (this) {
+    let { entry, urlParts } = this.props;
+    if (entry && entry.id === item.id) {
+      linkProps.style.push(mainCSS.active);
+    }
+    if (urlParts) {
+      linkProps.to = `${urlParts[0]}/${item.id}`;
+    }
+    if (this.onItemLongPress) {
+      linkProps.onLongPress = () => this.onItemLongPress(__item);
+    }
+  }
   return (
-    <TouchLink
-      to={`${urlParts[0]}/${item.id}`}
-      underlayColor={colors.touch}
-      style={[styles.item, entry && entry.id === item.id && mainCSS.active]}
-      onLongPress={() => this.onItemLongPress(item)}
-    >
+    <TouchLink {...linkProps}>
       <View style={mainCSS.between}>
         <View>
           <View>
@@ -29,20 +40,23 @@ export function renderItem({ item }) {
               {item.name}
             </Text>
           </View>
-          <View style={mainCSS.row}>
-            <Text style={styles.badge}>
-              {item.address}
-            </Text>
-          </View>
+          {item.badge &&
+            <View style={mainCSS.row}>
+              <Text style={styles.badge}>
+                {item.badge}
+              </Text>
+            </View>}
         </View>
 
         <View style={mainCSS.pullRightCol}>
           <View>
-            <Text style={styles.aux}>Coordinates</Text>
+            <Text style={styles.aux}>
+              {item.aux}
+            </Text>
           </View>
           <View>
             <Text style={styles.extra}>
-              {item.coords}
+              {item.extra}
             </Text>
           </View>
         </View>
@@ -54,3 +68,12 @@ export function renderItem({ item }) {
 export const renderSeparator = () => <View style={mainCSS.divider} />;
 
 export const renderSectionSeparator = () => <View style={mainCSS.vgap20} />;
+
+export default adapter => ({
+  renderSectionHeader,
+  renderSeparator,
+  renderSectionSeparator,
+  renderRow: function({ item }) {
+    return renderRow.call(this, { item: adapter(item) }, item);
+  },
+});

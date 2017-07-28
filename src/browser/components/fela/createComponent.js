@@ -9,9 +9,19 @@ var clone = obj => {
   return copy;
 };
 
+const composeArray = arr => {
+  var obj = {};
+  for (var i = 0, len = arr.length; i < len; i++) {
+    var el = arr[i];
+    if (typeof el === 'function') el = el();
+    for (var j in el) obj[j] = el[j];
+  }
+  return obj;
+};
+
 function createComponent(type = 'div', passThroughProps = []) {
   var FelaComponent = function FelaComponent(
-    { children, className, id, style = {}, ...ruleProps },
+    { children, className, id, style, ...ruleProps },
     { renderer, theme = {} }
   ) {
     var cloned = false;
@@ -22,7 +32,10 @@ function createComponent(type = 'div', passThroughProps = []) {
       }
       style[':hover'] = Object.assign({ cursor: 'pointer' }, style[':hover'], prop);
     };
-    if (style instanceof Array) style = Object.assign({}, ...style);
+
+    if (style instanceof Array) style = composeArray(style);
+    else if (typeof style === 'function') style = style();
+    else if (!style) style = {};
 
     var componentProps = passThroughProps.reduce((output, prop) => {
       if (typeof prop === 'object') {
@@ -39,6 +52,9 @@ function createComponent(type = 'div', passThroughProps = []) {
             break;
           case 'selectedValue':
             output.value = ruleProps.selectedValue;
+            break;
+          case 'numberOfLines':
+            output.rows = ruleProps.numberOfLines;
             break;
           case 'onValueChange':
             output.onChange = ruleProps.onValueChange;

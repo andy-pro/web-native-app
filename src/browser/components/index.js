@@ -9,6 +9,7 @@ import SectionList from './SectionList';
 import FormWrapper from '../../common/__components/FormWrapper';
 import Dialogs from '../../common/__components/Dialogs';
 import Checkbox from '../../common/__components/Checkbox';
+import Notify from '../../common/__components/Notify';
 import { View } from './fela';
 
 const Alert = {
@@ -39,6 +40,7 @@ export {
   FormWrapper,
   Dialogs,
   Alert,
+  Notify,
 };
 
 export {
@@ -46,6 +48,7 @@ export {
   Form,
   Button,
   TextInput,
+  TextArea,
   FileInput,
   TouchableHighlight,
   TouchableOpacity,

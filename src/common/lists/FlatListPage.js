@@ -1,19 +1,17 @@
 import React from 'react';
 
 import { FlatList } from '../components';
-import { renderItem, renderSeparator } from './elements';
+import renderSet from '../list_common/elements';
+import { toPresident } from '../list_common/adapters';
 import { mainCSS } from '../styles';
 import initialState from '../initialState';
 
-export default class extends React.Component {
-  render() {
-    return (
-      <FlatList
-        contentContainerStyle={mainCSS.list}
-        data={initialState.presidents}
-        renderItem={renderItem}
-        ItemSeparatorComponent={renderSeparator}
-      />
-    );
-  }
-}
+const { renderRow, renderSeparator } = renderSet(toPresident);
+
+export default () =>
+  <FlatList
+    contentContainerStyle={mainCSS.list}
+    data={initialState.presidents}
+    renderItem={renderRow}
+    ItemSeparatorComponent={renderSeparator}
+  />;

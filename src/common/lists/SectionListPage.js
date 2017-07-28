@@ -1,27 +1,20 @@
 import React from 'react';
 
 import { SectionList } from '../components';
-import {
-  renderItem,
-  renderSeparator,
-  renderSectionHeader,
-  renderSectionSeparator,
-} from './elements';
+import renderSet from '../list_common/elements';
+import { toPresident } from '../list_common/adapters';
+import { presidentSplitter } from '../list_common/splitters';
 import { mainCSS } from '../styles';
-import toSections from './toSections';
 import initialState from '../initialState';
 
-export default class extends React.Component {
-  render() {
-    return (
-      <SectionList
-        contentContainerStyle={mainCSS.list}
-        sections={toSections(initialState.presidents)}
-        renderSectionHeader={renderSectionHeader}
-        renderItem={renderItem}
-        SectionSeparatorComponent={renderSectionSeparator}
-        ItemSeparatorComponent={renderSeparator}
-      />
-    );
-  }
-}
+const set = renderSet(toPresident);
+
+export default () =>
+  <SectionList
+    contentContainerStyle={mainCSS.list}
+    sections={presidentSplitter(initialState.presidents)}
+    renderSectionHeader={set.renderSectionHeader}
+    renderItem={set.renderRow}
+    SectionSeparatorComponent={set.renderSectionSeparator}
+    ItemSeparatorComponent={set.renderSeparator}
+  />;

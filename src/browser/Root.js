@@ -10,6 +10,7 @@ import subscribe from './components/subscribe';
 import configureFela from './components/fela/config';
 import configureStore from '../common/__config/store';
 import config from '../common/config';
+import * as backup from './components/backup';
 import initialState from '../common/initialState';
 import App from '../common/app/App';
 import os from '../common/os';
@@ -45,6 +46,7 @@ process.__elapsed = (msg) => {
 const store = configureStore({
   initialState,
   platformDeps: {
+    backup,
     config,
     messages,
     storageEngine: localforage,

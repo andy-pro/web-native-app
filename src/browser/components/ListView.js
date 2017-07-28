@@ -71,6 +71,12 @@ class ListView extends React.Component {
 
     let sl = _dataBlob.length;
 
+    let __row = (item, index, len, id, sid) =>
+      <div key={id}>
+        {renderRow(item, sid, id)}
+        {index < len - 1 && renderSeparator && renderSeparator(sid, id)}
+      </div>;
+
     return (
       <View style={contentContainerStyle}>
         {sectionIdentities
@@ -81,36 +87,15 @@ class ListView extends React.Component {
               return enableEmptySections || rl
                 ? <div key={sid}>
                     {renderSectionHeader(sectionData, sid)}
-                    {rows.map((rid, index) => {
-                      let rowData = _getRowData(_dataBlob, sid, rid);
-                      return (
-                        <div key={rid}>
-                          {renderRow(rowData, sid, rid)}
-                          {index < rl - 1 && renderSeparator(sid, rid)}
-                        </div>
-                      );
-                    })}
+                    {rows.map((rid, index) =>
+                      __row(_getRowData(_dataBlob, sid, rid), index, rl, rid, sid)
+                    )}
                   </div>
                 : null;
             })
           : rowIdentities
-            ? rowIdentities.map((id, index) => {
-                return (
-                  <div key={id}>
-                    {renderRow(_dataBlob[id], null, id)}
-                    {index < sl - 1 && renderSeparator(null, id)}
-                  </div>
-                );
-              })
-            : _dataBlob.map((item, index) => {
-                let id = item.id || index;
-                return (
-                  <div key={id}>
-                    {renderRow(item, null, id)}
-                    {index < sl - 1 && renderSeparator(null, id)}
-                  </div>
-                );
-              })}
+            ? rowIdentities.map((id, index) => __row(_dataBlob[id], index, sl, id))
+            : _dataBlob.map((item, index) => __row(item, index, sl, item.id || index))}
       </View>
     );
   }

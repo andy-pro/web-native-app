@@ -22,7 +22,7 @@ export default ({
   stateProps,
   Form,
   onListMount,
-  renderProps,
+  renderSet,
   isDataChanged,
   toSections,
   ...userProps
@@ -82,14 +82,14 @@ export default ({
         });
 
       render() {
-        // console.log('this EDITED LIST render', this.mode, this.props, renderProps);
+        // console.log('this EDITED LIST render', this.mode, this.props, renderSet);
         let { mode, sections } = this,
           {
             renderSectionHeader,
-            renderItem,
+            renderRow,
             renderSectionSeparator,
             renderSeparator,
-          } = renderProps;
+          } = renderSet;
         return (
           <View style={[mainCSS.fullArea, mainCSS.limited]}>
             {Boolean(mode) && <Form mode={mode} listName={listName} {...this.props} />}
@@ -97,7 +97,7 @@ export default ({
               contentContainerStyle={mainCSS.list}
               sections={sections}
               renderSectionHeader={renderSectionHeader}
-              renderItem={renderItem.bind(this)}
+              renderItem={renderRow.bind(this)}
               SectionSeparatorComponent={renderSectionSeparator}
               ItemSeparatorComponent={renderSeparator}
               keyExtractor={item => item.id}
