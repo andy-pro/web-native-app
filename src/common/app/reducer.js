@@ -1,5 +1,6 @@
-// import { REHYDRATE } from 'redux-persist/constants';
 // import __initialState from '../initialState';
+// import { REHYDRATE } from 'redux-persist/constants';
+import { IMPORTED } from '../__backup/constants';
 import os from '../os';
 
 const initialState = {
@@ -34,7 +35,7 @@ const reducer = (state = initialState, action) => {
   // Because it's called from the server/frontend/createInitialState.
   if (!action) return state;
 
-  let { type, payload } = action;
+  let { type, payload, opts } = action;
 
   // Map all app errors into state.app.error.
   // In React Native, we show errors in one nicely animated unobtrusive alert.
@@ -44,12 +45,13 @@ const reducer = (state = initialState, action) => {
     state = { ...state, error: payload.error };
   }
 
-  if (type.startsWith('notify/')) {
-    state = { ...state, notify: action.opts.notify };
+  if (opts && opts.notify) {
+    state = { ...state, notify: opts.notify };
   }
 
   switch (type) {
     case 'APP_ERROR':
+      // TODO: error notifier
       return { ...state, error: payload.error };
 
     case 'APP_SHOW_MENU':
@@ -103,23 +105,15 @@ const reducer = (state = initialState, action) => {
         command: null,
       };
 
-    case 'categories/UPDATED':
-    case 'notify/categories/UPDATED':
-    case 'locations/UPDATED':
-    case 'notify/locations/UPDATED':
+    case 'LIST_UPDATE':
       if (action.cmd === 'remove') {
         state = { ...state, entry: null };
         if (state.command && state.command.name === 'pre_update') state.command = null;
       }
       return state;
 
-    case 'db/IMPORTED_DATA':
-    case 'notify/db/IMPORTED_DATA':
-      let { mode, data } = payload;
-      if (mode === 'merge') {
-        data = state.importedData + data;
-      }
-      return { ...state, importedData: data };
+    case IMPORTED:
+      return { ...state, importedData: payload };
 
     // this is the care of the autoRehydrate({stateReconciler})
     // process all the keys listed in 'config/storage.path

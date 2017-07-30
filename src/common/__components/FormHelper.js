@@ -4,12 +4,6 @@ import slugify from 'slugify';
 import { findDuplicateByObj } from '../__lib/find';
 import { FormWrapper, Dialogs } from '../components';
 
-const propsTextInput = {
-  keyboardType: 'default',
-  returnKeyType: 'done',
-  autoCapitalize: 'sentences',
-};
-
 export default Form =>
   FormWrapper(Form.model)(
     class extends React.Component {
@@ -66,13 +60,7 @@ export default Form =>
 
       render() {
         // console.log('props from form helper', this.props);
-        return (
-          <Form
-            onSubmit={this.onSubmit}
-            propsTextInput={propsTextInput}
-            {...this.props}
-          />
-        );
+        return <Form onSubmit={this.onSubmit} {...this.props} />;
       }
     }
   );

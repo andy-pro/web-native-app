@@ -39,6 +39,14 @@ const makeChoice = () => {
     { cancelable: false }
   );
 };
+const Title = ({ text }) =>
+  <Text style={{ fontStyle: 'italic' }}>
+    {text}
+  </Text>;
+const Extra = ({ text }) =>
+  <Text style={{ fontWeight: 'bold' }}>
+    {text}
+  </Text>;
 
 export default ({ history, layout }) => {
   let border = { borderWidth: 1, borderColor: '#ddd', margin: 15, padding: 10 },
@@ -53,17 +61,32 @@ export default ({ history, layout }) => {
         </View>
 
         <View style={[border, mainCSS.fullMain, mainCSS.center]}>
-          <Text style={{ fontStyle: 'italic' }}>Buttons</Text>
+          <Title text="Buttons" />
           <Gap />
           <Button title="Button" color={colors.submain} onPress={onPress} />
           <Gap />
-          <IconButton name="io-search" message="IconButton" onPress={onPress} />
+          <IconButton name="io-search" message="Print to console" onPress={onPress} />
+          <Gap />
+          <Link to="https://andy-pro.github.io/myLocations">
+            <IconButton
+              name="go-globe"
+              message="link to myLocations"
+              backgroundColor={colors.success}
+            />
+          </Link>
           <Gap />
         </View>
 
         <View style={border}>
-          <Text style={{ fontStyle: 'italic' }}>External link</Text>
-          <Link to="https://google.com" message="Google" inline />
+          <Title text="External link" />
+          <Gap />
+          <View>
+            <Link
+              to="https://andy-pro.github.io/icon-viewer"
+              message="Icon Viewer"
+              inline
+            />
+          </View>
         </View>
 
         <TouchableHighlight
@@ -125,7 +148,19 @@ export default ({ history, layout }) => {
         <FormDemo />
 
         <View style={border}>
-          <Text style={{ fontStyle: 'italic' }}>ScrollView</Text>
+          <Title text="EditedList" />
+          <Gap />
+          <Text>
+            <Link to="/editedlist" message="EditedList" inline /> - High Order Component,
+            that helps you organize standard operations on items of collections, such as{' '}
+            <Extra text="insert" />, <Extra text="update" /> and <Extra text="remove" />.
+            Works in conjunction with Redux, FormWrapper and has a declarative interface.
+            Editing mode is available after a <Extra text="long press" /> on item.{' '}
+          </Text>
+        </View>
+
+        <View style={border}>
+          <Title text="ScrollView" />
           <ScrollView style={[border, { height: 140 }]}>
             <Text>
               {`${__data.lorem} ${__data.ipsum}`}
@@ -134,7 +169,7 @@ export default ({ history, layout }) => {
         </View>
 
         <View style={border}>
-          <Text style={{ fontStyle: 'italic' }}>SVG</Text>
+          <Title text="SVG" />
         </View>
         <Svg height="100" width="100">
           <Circle cx="50" cy="50" r="45" stroke="blue" strokeWidth="2.5" fill="green" />

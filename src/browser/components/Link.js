@@ -28,8 +28,14 @@ export const Link = ({ to, exact, inline, style, message, children, ...props }) 
   return typeof to === 'function'
     ? <Text onClick={to} style={[mainCSS.t_link, style]} />
     : to.includes('://')
-      ? <AnchorLink href={to} target="_blank" style={[mainCSS.h_link, style]} {...props}>
+      ? <AnchorLink
+          href={to}
+          target="_blank"
+          style={[mainCSS.h_link, style, children && { textDecoration: 'none' }]}
+          {...props}
+        >
           {message}
+          {children}
         </AnchorLink>
       : <TouchableHighlight style={[mainCSS.v_link, style]} {...props}>
           <NavLink exact={exact} to={to} activeStyle={{ textDecoration: 'underline' }}>

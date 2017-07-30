@@ -2,7 +2,7 @@ import 'rxjs';
 import { combineEpics } from 'redux-observable';
 
 import { epics as appEpics } from '../app/actions';
-import { epics as backupEpics } from '../backup/actions';
+import { epics as backupEpics } from '../__backup/actions';
 
 // prettier-ignore
 const epics = [

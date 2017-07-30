@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { exportData, importData } from './actions';
+import { exportData, importData } from '../__backup/actions';
 import {
   Form,
   View,
@@ -13,22 +13,21 @@ import {
   Picker,
   FormWrapper,
 } from '../components';
+import Popup from '../__components/Popup';
 import { removeSpecial } from '../__lib/utils';
-import { colors, mainCSS } from '../styles';
+import { colors, inputSetDef, mainCSS } from '../styles';
 import __data from '../__data';
 import os from '../os';
-
-const textInputProps = {
-  keyboardType: 'default',
-  returnKeyType: 'done',
-  autoCapitalize: 'sentences',
-  style: mainCSS.input,
-};
 
 class BackupPage extends Component {
   componentWillReceiveProps({ importedData, fields }) {
     if (importedData !== this.props.importedData) {
-      fields.__setState({ importedData });
+      // console.log('importedData', importedData);
+      let { data, opts: { importedData: oldData, mode } } = importedData;
+      if (mode === 'merge') {
+        data = oldData + data;
+      }
+      fields.__setState({ importedData: data });
     }
   }
 
@@ -47,7 +46,7 @@ class BackupPage extends Component {
 
   onImportSubmit = (data, fields) => {
     if (this.props.disabled || !data) return;
-    this.props.importData(data);
+    this.props.importData(data.importName, data);
     fields.__setState({ importName: '' });
   };
 
@@ -57,11 +56,14 @@ class BackupPage extends Component {
       { messages: T } = os,
       color = disabled ? colors.disabled : colors.success,
       { textData, exportName, importName, mode, importedData } = fields;
+    /* <Popup> is necessary for the correct operation of the 
+       FileInput component in react-native mode
+    */
     return (
-      <View style={mainCSS.vgap20}>
+      <Popup style={mainCSS.vgap20}>
         <Form style={mainCSS.form} onSubmit={onExportSubmit}>
           <View style={mainCSS.formRow}>
-            <TextArea multiline numberOfLines={6} {...textData} {...textInputProps} />
+            <TextArea multiline numberOfLines={6} {...textData} {...inputSetDef} />
           </View>
           <View style={[mainCSS.formRow, mainCSS.center]}>
             <Text>Export the above text to a file</Text>
@@ -70,7 +72,7 @@ class BackupPage extends Component {
             <TextInput
               placeholder={T['placeholders.file.name']}
               {...exportName}
-              {...textInputProps}
+              {...inputSetDef}
             />
             <IconButton
               name="md-cloud-upload"
@@ -88,7 +90,7 @@ class BackupPage extends Component {
             <FileInput
               placeholder={T['placeholders.file.input']}
               {...importName}
-              {...textInputProps}
+              {...inputSetDef}
             />
           </View>
           <View style={mainCSS.formRow}>
@@ -104,10 +106,10 @@ class BackupPage extends Component {
             />
           </View>
           <View style={mainCSS.formRow}>
-            <TextArea multiline numberOfLines={6} {...importedData} {...textInputProps} />
+            <TextArea multiline numberOfLines={6} {...importedData} {...inputSetDef} />
           </View>
         </Form>
-      </View>
+      </Popup>
     );
   }
 }

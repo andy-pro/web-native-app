@@ -1,4 +1,5 @@
 import React from 'react';
+import shortid from 'js-shortid';
 
 import { View, TextInput, FormWrapper } from '../components';
 import {
@@ -8,7 +9,7 @@ import {
   // RenderSimple,
   // RenderHighlight,
 } from '../__components/Popup';
-import { mainCSS } from '../styles';
+import { inputSetDef, mainCSS } from '../styles';
 import initialState from '../initialState';
 import os from '../os';
 
@@ -19,22 +20,12 @@ class PresidentForm extends React.Component {
     let popups = {
       name: {
         list: presidents,
-        pos: { maxHeight: os.isNative ? 202 : 286 },
+        style: { maxHeight: os.isNative ? 202 : 286 },
         key: 'president', // key of item to display, used for render helpres and find helpers
         getSuggestions: FindMultiword,
         renderSuggestion: RenderMultiword,
-        onSelect: suggestion => {
-          // this.props.fields.name.onChangeText(suggestion.president);
-          this.props.fields.__setState({
-            name: suggestion.president,
-          });
-          this.props.fields.__refs.name.focus();
-          this.props.onSelect({
-            name: 'insert',
-            path: 'presidents',
-            entry: suggestion,
-          });
-        },
+        // renderSuggestion: RenderSimple,
+        onSelect: this.onNameSelect,
       },
     };
     this.popup = this.context.popup.init(popups, this.props.fields);
@@ -51,8 +42,9 @@ class PresidentForm extends React.Component {
         <View style={mainCSS.formRow}>
           <TextInput
             placeholder={'Type president name'}
+            onBlur={this.onBlur}
             {...name}
-            {...this.textInputProps}
+            {...inputSetDef}
           />
         </View>
       </View>
@@ -61,12 +53,19 @@ class PresidentForm extends React.Component {
 
   onBlur = e => this.popup.onBlur(e);
 
-  textInputProps = {
-    onBlur: this.onBlur,
-    keyboardType: 'default',
-    returnKeyType: 'done',
-    autoCapitalize: 'sentences',
-    style: mainCSS.input,
+  /* onSelect handlers */
+  onNameSelect = (entry, fields) => {
+    // fields.name.onChangeText(entry.president);
+    fields.__setState({
+      name: entry.president,
+    });
+    fields.__refs.name.focus();
+    entry.key = shortid.gen();
+    this.props.onSelect({
+      name: 'insert',
+      path: 'presidents',
+      entry,
+    });
   };
 }
 

@@ -3,7 +3,7 @@ import React from 'react';
 import AutosuggestHighlightParse from 'autosuggest-highlight/parse';
 
 import { View, Text, ListView, TouchableHighlight } from '../components';
-import { suggestionsCSS as styles } from '../styles';
+import { colors, suggestionsCSS as styles } from '../styles';
 import os from '../os';
 
 export default class Popup extends React.Component {
@@ -56,13 +56,14 @@ export default class Popup extends React.Component {
       return;
     }
 
-    let trigger = () => this.setState({ showMenu, selectedIndex });
-
-    let { query, list, key, element, pos, getSuggestions, popupOnEmpty } = popup,
+    let { query, list, key, element, getSuggestions, popupOnEmpty } = popup,
       suggestions = query || popupOnEmpty ? getSuggestions(query, list, key) : [],
       len = suggestions.length,
-      showMenu = Boolean(len),
+      showMenu = !!len,
       selectedIndex = -1;
+
+    let trigger = () => this.setState({ showMenu, selectedIndex });
+
     this.suggestions = suggestions;
     // console.log('trigger start', this.itemWasSelected, popup.query, len);
     if (showMenu) {
@@ -76,7 +77,7 @@ export default class Popup extends React.Component {
         if (os.isNative) {
           element.measure((fx, fy, width, height, px, py) => {
             // fx, fy - offset to frame; px, py - offset to page
-            this.position = { ...pos, top: py - 12 };
+            this.position = { top: py - 12 };
             // console.log('after measure, fy:', fy, 'pos:', py);
 
             /*
@@ -91,7 +92,7 @@ export default class Popup extends React.Component {
             trigger();
           });
         } else {
-          this.position = { ...pos, top: 30 + element.offsetTop };
+          this.position = { top: 30 + element.offsetTop };
           trigger();
         }
       }
@@ -147,22 +148,26 @@ export default class Popup extends React.Component {
   };
 
   selectSuggestion = s => {
-    // console.log('selectSuggestion', this.popup);
-    this.popup.onSelect(s, this.popup);
-    if (!this.popup.popupOnEmpty) {
+    let { fields, popup } = this;
+    // console.log('selectSuggestion', popup);
+    popup.onSelect(s, fields, popup);
+    if (!popup.popupOnEmpty) {
       this.itemWasSelected = true;
     }
     this.setState({ showMenu: false });
   };
 
   renderSuggestion = suggestion => {
-    let { popup } = this;
+    let { popup } = this,
+      { __selected } = suggestion,
+      touch = colors.mainTouch;
     return (
       <TouchableHighlight
         onPress={() => this.selectSuggestion(suggestion)}
-        underlayColor="#bbb"
+        underlayColor={touch}
+        style={[styles.view, __selected && { backgroundColor: touch }]}
         $ref={c => {
-          if (suggestion.__selected && c) c.scrollIntoViewIfNeeded(false);
+          if (__selected && c) c.scrollIntoViewIfNeeded(false);
         }}
       >
         {popup.renderSuggestion(suggestion, popup)}
@@ -171,17 +176,16 @@ export default class Popup extends React.Component {
   };
 
   render() {
-    // console.log('popup menu renderer', this.state.showMenu);
-    // console.log('popup menu renderer', Object.keys(this.props.children));
+    let { popup } = this;
+    // console.log('popup menu render', this.state.showMenu, popup);
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, this.props.style]}>
         {this.props.children}
-
         {this.state.showMenu &&
-          this.popup &&
-          this.popup.renderSuggestion &&
+          popup &&
+          popup.renderSuggestion &&
           <ListView
-            contentContainerStyle={[styles.list, this.position]}
+            contentContainerStyle={[styles.list, popup.style, this.position]}
             dataSource={this.ds.cloneWithRows(this.suggestions)}
             keyboardShouldPersistTaps="always"
             enableEmptySections={true}
@@ -242,31 +246,27 @@ export const FindMultiword = (query, list, key) =>
 
 /*~~~~~~~~~~~~~~~~render helpers~~~~~~~~~~~~~~~~*/
 
-const renderItem = (item, selected) =>
-  <View style={selected ? styles.selected : styles.view}>
-    {item}
-  </View>;
+export const RenderSimple = (suggestion, { key }) =>
+  <Text style={styles.text}>
+    {suggestion[key]}
+  </Text>;
 
-export const RenderMultiword = ({ __parts, __selected }, { query }) => {
-  const item = (
-    <Text style={styles.text}>
-      {__parts.map((part, i) =>
-        <Text key={i} style={part.highlight ? styles.highlight : null}>
-          {part.text}
-        </Text>
-      )}
-    </Text>
-  );
-  return renderItem(item, __selected);
-};
+export const RenderMultiword = ({ __parts }) =>
+  <Text style={styles.text}>
+    {__parts.map((part, i) =>
+      <Text key={i} style={part.highlight ? styles.highlight : null}>
+        {part.text}
+      </Text>
+    )}
+  </Text>;
 
 export const RenderHighlight = (suggestion, { key, query }) => {
   // console.log('suggestion', suggestion, key, query);
   let words = suggestion[key];
-  // { query, words: 'xxx' or ['xxx', {highlight: 'yyy'}, 'zzz', ...], suggestion.__selected }
+  // { query, words: 'xxx' or ['xxx', {highlight: 'yyy'}, 'zzz', ...] }
   // 'xxx' => [{ highlight: 'xxx' }]
   if (!Array.isArray(words)) words = [{ highlight: words }];
-  const item = (
+  return (
     <Text style={styles.text}>
       {words.map((word, i) => {
         if (typeof word === 'object') {
@@ -285,14 +285,4 @@ export const RenderHighlight = (suggestion, { key, query }) => {
       })}
     </Text>
   );
-  return renderItem(item, suggestion.__selected);
-};
-
-export const RenderSimple = (suggestion, { key }) => {
-  const item = (
-    <Text style={styles.text}>
-      {suggestion[key]}
-    </Text>
-  );
-  return renderItem(item, suggestion.__selected);
 };

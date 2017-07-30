@@ -9,9 +9,9 @@ import setupTouch from './components/setupTouch';
 import subscribe from './components/subscribe';
 import configureFela from './components/fela/config';
 import configureStore from '../common/__config/store';
-import config from '../common/config';
-import * as backup from './components/backup';
+import * as backup from '../common/__backup/browser';
 import initialState from '../common/initialState';
+import config from '../common/config';
 import App from '../common/app/App';
 import os from '../common/os';
 

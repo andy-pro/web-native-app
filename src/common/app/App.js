@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { appStart, appStop, appLayout, resetForm } from './actions';
-import { View, Notify, withRouter } from '../components';
+import { appStart, appStop, appShowMenu, appLayout, resetForm } from './actions';
+import { Drawer, Notify, withRouter } from '../components';
 
 import Page from '../__components/Page';
 import config from '../../common/config';
@@ -59,14 +59,14 @@ class App extends React.Component {
 
   render() {
     // console.log('%cApp render', 'color:blue;font-weight:bold', this.props);
-    let { layout, dataReady } = this.props,
+    let { menuShown, appShowMenu, layout, dataReady } = this.props,
       props = { layout, dataReady };
     // if (os.isNative) {
     //   mainViewProps.onLayout = e => this.props.appLayout(e.nativeEvent.layout);
     // }
     // console.log('App render', layout);
     return (
-      <View style={mainCSS.fullMain}>
+      <Drawer style={mainCSS.fullMain} open={menuShown} trigger={appShowMenu}>
         <Page path="/" exact component={HomePage} {...props} />
         <Page path="/demo" component={DemoPage} {...props} />
         <Page path="/listview" component={ListViewPage} {...props} />
@@ -78,7 +78,7 @@ class App extends React.Component {
         <Page path="/autosuggest" component={PopupDemoPage} {...props} />
         <Page path="/backup" component={BackupPage} {...props} />
         <Page path="/fetch" component={AjaxDemoPage} {...props} />
-      </View>
+      </Drawer>
     );
   }
 }
@@ -86,6 +86,7 @@ class App extends React.Component {
 export default withRouter(
   connect(
     ({ app }) => ({
+      menuShown: app.menuShown,
       notify: app.notify,
       command: app.command,
       dataReady: app.dataReady,
@@ -94,6 +95,7 @@ export default withRouter(
     {
       appStart,
       appStop,
+      appShowMenu,
       appLayout,
       resetForm,
     }

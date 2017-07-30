@@ -138,7 +138,7 @@ export const mainCSS = {
   formBtn: {},
   input: {
     ':focus': {
-      borderColor: colors.mainTouch,
+      borderColor: colors.main,
       boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0,164,211,.6)',
     },
     width: 0,
@@ -185,7 +185,6 @@ export const mainCSS = {
   },
   a_link: {
     // ':hover': {
-    // textDecoration: 'underline',
     // backgroundColor: colors.touch,
     // },
     // fontSize: opts.fontSize * 0.9,
@@ -197,6 +196,9 @@ export const mainCSS = {
     // paddingBottom: 6,
     display: 'block',
     userSelect: 'none',
+  },
+  h_link: {
+    textDecoration: 'underline',
   },
 
   /* footer */
@@ -253,7 +255,7 @@ export const menuCSS = {
     backgroundImage: `url(${menuImg})`,
     backgroundSize: '100% 100%',
     width: opts.menuWidth - opts.gaps,
-    boxShadow: '2px 2px 5px ' + colors.middle,
+    boxShadow: '2px 2px 5px gray',
     ...colors.border,
   },
   link: {
@@ -269,4 +271,8 @@ export const menuCSS = {
       color: colors.silver,
     },
   },
+};
+
+export const inputSetDef = {
+  style: mainCSS.input,
 };

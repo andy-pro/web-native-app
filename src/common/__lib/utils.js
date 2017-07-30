@@ -73,11 +73,9 @@ export const splitOnce = (str, dt, last = false) => {
 // eslint-disable-next-line
 const specialCharsRegex = /[\/|\&\?<>]/g;
 
-const removeSpecial = s => s.trim().replace(specialCharsRegex, '');
+export const removeSpecial = s => s.trim().replace(specialCharsRegex, '');
 
-const getSlug = s => slugify(removeSpecial(s));
-
-export { removeSpecial, getSlug };
+export const getSlug = s => slugify(removeSpecial(s));
 
 export const splitCategory = category => category.split('/').map(c => removeSpecial(c));
 
@@ -86,7 +84,7 @@ export const slugifyCategory = category =>
 
 /* =============  operations on local collections  ================== */
 
-export const cmdUpdateLocal = (list, { cmd, payload }) => {
+export const cmdUpdateLocal = (list, { cmd, payload, response }) => {
   // console.log('utils', cmd, payload);
   switch (cmd) {
     case 'insert':
@@ -103,6 +101,9 @@ export const cmdUpdateLocal = (list, { cmd, payload }) => {
 
     case 'purge':
       return deleteItemsByIndexes(list, payload);
+
+    case 'replace':
+      return response;
 
     default:
       return list;

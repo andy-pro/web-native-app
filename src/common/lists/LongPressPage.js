@@ -19,9 +19,9 @@ export default connect(({ app }) => ({ entry: app.entry }), { setEntry })(
         entry,
       });
 
-    /* если из подпрограмм рендеринга (renderSet) нужен доступ
-       к элементам класса (как onItemLongPress в этом примере),
-       то необходимо передавать контекст с помощью bind(this)
+    /* if renderSet methods needs access to the elements of the
+       class (as onItemLongPress in this example), then you need
+       to pass the context using 'bind(this)'
     */
     render() {
       return (

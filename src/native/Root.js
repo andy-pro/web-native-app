@@ -6,8 +6,9 @@ import LocalizedStrings from 'react-native-localization';
 
 import setupHardwareBackPress from './components/setupHardwareBackPress';
 import configureStore from '../common/__config/store';
-import config from '../common/config';
+import * as backup from '../common/__backup/native';
 import initialState from '../common/initialState';
+import config from '../common/config';
 import App from '../common/app/App';
 import os from '../common/os';
 
@@ -37,9 +38,10 @@ initialState.app.currentLocale = getDefaultDeviceLocale();
 const store = configureStore({
   initialState,
   platformDeps: {
+    backup,
     config,
-    storageEngine: AsyncStorage,
     messages,
+    storageEngine: AsyncStorage,
   },
 });
 

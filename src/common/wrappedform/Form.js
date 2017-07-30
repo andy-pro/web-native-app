@@ -8,15 +8,8 @@ import {
   IconButton,
 } from '../components';
 import { removeSpecial } from '../__lib/utils';
-import { mainCSS } from '../styles';
+import { inputSetDef, mainCSS } from '../styles';
 import initialState from '../initialState';
-
-const textInputProps = {
-  keyboardType: 'default',
-  returnKeyType: 'done',
-  autoCapitalize: 'sentences',
-  style: mainCSS.input,
-};
 
 const Form = props => {
   let { fields, mode, onSubmit } = props,
@@ -27,11 +20,11 @@ const Form = props => {
         <TextInput
           placeholder={addMode ? 'New entry' : 'Edit entry'}
           {...fields.name}
-          {...textInputProps}
+          {...inputSetDef}
         />
       </View>
       <View style={mainCSS.formRow}>
-        <TextInput placeholder={'Address'} {...fields.address} {...textInputProps} />
+        <TextInput placeholder={'Address'} {...fields.address} {...inputSetDef} />
       </View>
 
       <View style={mainCSS.formRow}>
@@ -40,7 +33,7 @@ const Form = props => {
         <Checkbox label="Disabled" disabled />
       </View>
       <View style={mainCSS.formRow}>
-        <TextInput placeholder={'Coordinates'} {...fields.coords} {...textInputProps} />
+        <TextInput placeholder={'Coordinates'} {...fields.coords} {...inputSetDef} />
         <IconButton name="md-my-location" style={mainCSS.formBtn} title="Show on map" />
       </View>
       <View style={mainCSS.formRow}>
@@ -49,7 +42,7 @@ const Form = props => {
             <Picker.Item label={item} value={i} key={i} />
           )}
         </Picker>
-        <TextInput placeholder={'Zoom'} {...fields.zoom} {...textInputProps} />
+        <TextInput placeholder={'Zoom'} {...fields.zoom} {...inputSetDef} />
         <IconButton
           name={addMode ? 'md-add-circle' : 'md-edit'}
           onPress={onSubmit}

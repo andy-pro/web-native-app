@@ -10,14 +10,8 @@ import {
   Picker,
   IconButton,
 } from '../components';
-import { colors, mainCSS } from '../styles';
+import { colors, inputSetDef, mainCSS } from '../styles';
 import initialState from '../initialState';
-
-const propsTextInput = {
-  keyboardType: 'default',
-  returnKeyType: 'done',
-  autoCapitalize: 'sentences',
-};
 
 const onSubmit = e => {
   e.preventDefault();
@@ -33,7 +27,7 @@ const FormDemo = () =>
 
     <Text style={mainCSS.prompt}>TextInput</Text>
     <View style={mainCSS.formRow}>
-      <TextInput placeholder="New entry" style={mainCSS.input} {...propsTextInput} />
+      <TextInput placeholder="New entry" {...inputSetDef} />
     </View>
 
     <Divider />
@@ -68,7 +62,7 @@ const FormDemo = () =>
       <Link to="/backup" message="Import - Export" inline /> example.
     </Text>
     <View style={mainCSS.formRow}>
-      <FileInput placeholder="Select file" style={mainCSS.input} />
+      <FileInput placeholder="Select file" {...inputSetDef} />
     </View>
 
     <Divider />

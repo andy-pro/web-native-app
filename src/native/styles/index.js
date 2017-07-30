@@ -13,6 +13,7 @@ const center = {
   alignItems: 'center',
   justifyContent: 'center',
 };
+
 export const mainCSS = StyleSheet.create({
   root: {
     flex: 1,
@@ -175,3 +176,10 @@ export const checkboxCSS = StyleSheet.create({
     paddingRight: 10,
   },
 });
+
+export const inputSetDef = {
+  keyboardType: 'default',
+  returnKeyType: 'done',
+  autoCapitalize: 'sentences',
+  style: mainCSS.input,
+};

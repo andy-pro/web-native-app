@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image } from '../components';
+import { View, Text, Link, Image } from '../components';
 import { mainCSS } from '../styles';
 import img from '../__components/img/logo.png';
 
@@ -8,7 +8,16 @@ export default ({ history, layout }) => {
   return (
     <View style={[mainCSS.fullMain, { alignItems: 'center' }]}>
       <Text style={mainCSS.title}>Welcome to React Native!</Text>
-      <Image source={img} style={{ width: size }} />
+      <View>
+        <Text>Sharing Code</Text>
+      </View>
+      <View>
+        <Text>
+          React Web {'<>'} React Native
+        </Text>
+      </View>
+      <Link to="https://github.com/andy-pro/web-native-app" message="source" />
+      <Image source={img} style={{ width: size, marginVertical: 20 }} />
     </View>
   );
 };
